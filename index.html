@@ -521,6 +521,10 @@
                 t.model,
                 inputImageObj
               );
+              // Capture raw response for debugging (inspect via debug button)
+              try {
+                window.__lastModelResponse = resp;
+              } catch (e) {}
               // normalize to an <img> element
               let imgEl;
               try {
@@ -622,6 +626,133 @@
         outputs.innerHTML = "";
         setStatus("");
       });
+
+      // --- Auth helpers: receive notification from `auth_callback.html` (postMessage or storage event)
+      function handleAuthNotification(payload) {
+        try {
+          // payload may be an object or a JSON string
+          const p = typeof payload === "string" ? JSON.parse(payload) : payload;
+          setStatus(
+            "Authentication completed — reloading to pick up session...",
+            true
+          );
+          // cleanup storage marker
+          try {
+            localStorage.removeItem("putter_auth");
+          } catch (e) {}
+          // small delay so cookies/localStorage settle, then reload
+          setTimeout(() => location.reload(), 600);
+        } catch (e) {
+          console.warn("Auth notification parsing failed", e);
+        }
+      }
+
+      // postMessage from popup (preferred when opener exists)
+      window.addEventListener("message", (ev) => {
+        try {
+          if (!ev || !ev.data) return;
+          if (ev.data.__putter_auth) {
+            handleAuthNotification(ev.data.__putter_auth);
+          }
+        } catch (e) {
+          console.warn(e);
+        }
+      });
+
+      // storage event for cross-tab notifications (mobile where redirect opens a new tab)
+      window.addEventListener("storage", (ev) => {
+        try {
+          if (!ev) return;
+          if (ev.key === "putter_auth" && ev.newValue) {
+            handleAuthNotification(JSON.parse(ev.newValue));
+          }
+        } catch (e) {
+          console.warn(e);
+        }
+      });
+
+      // on load: if the redirect handler already wrote the marker, handle it
+      try {
+        const existingAuth = localStorage.getItem("putter_auth");
+        if (existingAuth) handleAuthNotification(JSON.parse(existingAuth));
+      } catch (e) {
+        /* ignore */
+      }
+
+      // --- Debug UI: show raw model response for troubleshooting ---
+      (function () {
+        const dbgBtn = document.createElement("button");
+        dbgBtn.textContent = "Show debug response";
+        dbgBtn.style.position = "fixed";
+        dbgBtn.style.right = "12px";
+        dbgBtn.style.bottom = "12px";
+        dbgBtn.style.padding = "8px 10px";
+        dbgBtn.style.zIndex = 9999;
+        dbgBtn.style.borderRadius = "8px";
+        dbgBtn.style.background = "rgba(0,0,0,0.6)";
+        dbgBtn.style.color = "#fff";
+        dbgBtn.onclick = () => {
+          const raw = window.__lastModelResponse;
+          const modal = document.createElement("div");
+          modal.style.position = "fixed";
+          modal.style.left = 0;
+          modal.style.top = 0;
+          modal.style.right = 0;
+          modal.style.bottom = 0;
+          modal.style.background = "rgba(0,0,0,0.6)";
+          modal.style.zIndex = 10000;
+          modal.style.display = "flex";
+          modal.style.alignItems = "center";
+          modal.style.justifyContent = "center";
+          const box = document.createElement("div");
+          box.style.maxWidth = "90%";
+          box.style.maxHeight = "80%";
+          box.style.overflow = "auto";
+          box.style.background = "#071028";
+          box.style.padding = "16px";
+          box.style.borderRadius = "10px";
+          box.style.color = "#e6eef8";
+          const pre = document.createElement("pre");
+          pre.style.whiteSpace = "pre-wrap";
+          pre.style.color = "#d0e6ff";
+          pre.style.fontSize = "12px";
+          try {
+            if (raw === undefined)
+              pre.textContent = "[no response captured yet]";
+            else
+              pre.textContent =
+                typeof raw === "string" ? raw : JSON.stringify(raw, null, 2);
+          } catch (e) {
+            pre.textContent = String(raw);
+          }
+          const copy = document.createElement("button");
+          copy.textContent = "Copy";
+          copy.style.marginRight = "8px";
+          copy.onclick = () => {
+            try {
+              navigator.clipboard.writeText(pre.textContent);
+              copy.textContent = "Copied";
+              setTimeout(() => (copy.textContent = "Copy"), 900);
+            } catch (e) {
+              alert("copy failed");
+            }
+          };
+          const close = document.createElement("button");
+          close.textContent = "Close";
+          close.onclick = () => {
+            modal.remove();
+          };
+          const actions = document.createElement("div");
+          actions.style.marginTop = "12px";
+          actions.appendChild(copy);
+          actions.appendChild(close);
+          box.appendChild(pre);
+          box.appendChild(actions);
+          modal.appendChild(box);
+          document.body.appendChild(modal);
+        };
+        document.body.appendChild(dbgBtn);
+      })();
     </script>
   </body>
 </html>

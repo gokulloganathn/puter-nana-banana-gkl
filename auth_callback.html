@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Auth callback</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, Arial;
+        background: #071028;
+        color: #dff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .box {
+        max-width: 720px;
+        background: #071028;
+        padding: 18px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      pre {
+        white-space: pre-wrap;
+        color: #cfe;
+      }
+      button {
+        padding: 8px 12px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h2>Authentication callback</h2>
+      <div id="info">Processing...</div>
+      <pre id="debug"></pre>
+      <div style="margin-top: 12px">
+        <button id="closeBtn">Close</button>
+      </div>
+    </div>
+
+    <script>
+      function parseParams() {
+        const out = {};
+        try {
+          // parse query string
+          const q = window.location.search.replace(/^\?/, "");
+          for (const part of q.split("&")) {
+            if (!part) continue;
+            const [k, v] = part.split("=");
+            out[decodeURIComponent(k)] = decodeURIComponent(v || "");
+          }
+        } catch (e) {}
+        try {
+          // parse hash fragment
+          const h = window.location.hash.replace(/^#/, "");
+          for (const part of h.split("&")) {
+            if (!part) continue;
+            const [k, v] = part.split("=");
+            out[decodeURIComponent(k)] = decodeURIComponent(v || "");
+          }
+        } catch (e) {}
+        return out;
+      }
+
+      (function () {
+        const info = document.getElementById("info");
+        const debug = document.getElementById("debug");
+        const closeBtn = document.getElementById("closeBtn");
+        const payload = {
+          ts: Date.now(),
+          data: parseParams(),
+          url: location.href,
+        };
+        try {
+          localStorage.setItem("putter_auth", JSON.stringify(payload));
+        } catch (e) {
+          // ignore
+        }
+        debug.textContent = JSON.stringify(payload, null, 2);
+
+        // If opener exists, postMessage and try to close
+        if (window.opener && !window.opener.closed) {
+          try {
+            window.opener.postMessage({ __putter_auth: payload }, "*");
+            info.textContent =
+              "Auth complete — returning to the app and closing this tab.";
+            setTimeout(() => {
+              try {
+                window.close();
+              } catch (e) {}
+            }, 800);
+            return;
+          } catch (e) {
+            // fall through
+          }
+        }
+
+        // No opener: instruct user to return to the original tab (storage event will notify it)
+        info.textContent =
+          "Auth complete. Please return to the app tab; it will detect the login automatically.";
+
+        closeBtn.addEventListener("click", () => {
+          try {
+            window.close();
+          } catch (e) {
+            /* ignore */
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
