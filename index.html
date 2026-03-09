@@ -1,514 +1,812 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Nano Banana Image Generator</title>
-    <style>
-      :root {
-        --bg: #0f1724;
-        --panel: #0b1220;
-        --muted: #94a3b8;
-        --accent: #7c5cff;
-        --glass: rgba(255, 255, 255, 0.04);
-        --card: #0b1228;
-        --btn: #3b82f6;
-      }
-      html, body { height: 100%; }
-      body {
-        margin: 0;
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-          Roboto, "Helvetica Neue", Arial;
-        background: linear-gradient(180deg, #071028 0%, #07192b 60%);
-        color: #e6eef8;
-        -webkit-font-smoothing: antialiased;
-      }
-      .app { max-width: 1100px; margin: 28px auto; padding: 20px; }
-      .topbar { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
-      .logo { display: flex; align-items: center; gap: 10px; }
-      .logo .mark {
-        width: 40px; height: 40px; border-radius: 10px;
-        background: linear-gradient(135deg, var(--accent), #00d4ff);
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 700; color: #061025;
-      }
-      .title { font-size: 18px; font-weight: 600; }
-      .card-panel {
-        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-        border-radius: 12px; padding: 18px;
-        border: 1px solid rgba(255,255,255,0.04);
-        box-shadow: 0 6px 24px rgba(2,6,23,0.6);
-      }
-      .prompt-box { display: flex; gap: 12px; align-items: flex-start; }
-      textarea#prompt {
-        flex: 1; min-height: 96px; background: transparent;
-        border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;
-        padding: 14px; color: inherit; font-size: 15px; resize: vertical;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-      }
-      .controls { display: flex; flex-direction: column; gap: 10px; width: 260px; }
-      select#model {
-        background: transparent; border: 1px solid rgba(255,255,255,0.06);
-        padding: 10px; border-radius: 8px; color: inherit;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nano Banana — Image Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Google+Sans+Display:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://js.puter.com/v2/"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      /* ── Multi-image drop zone ── */
-      .drop-zone {
-        border: 1.5px dashed rgba(255,255,255,0.12);
-        border-radius: 8px; padding: 14px 10px; text-align: center;
-        cursor: pointer; position: relative;
-        transition: border-color 0.2s, background 0.2s;
-        font-size: 12px; color: var(--muted);
-      }
-      .drop-zone:hover, .drop-zone.drag-over {
-        border-color: var(--accent);
-        background: rgba(124,92,255,0.05);
-      }
-      .drop-zone input[type="file"] {
-        position: absolute; inset: 0; opacity: 0;
-        cursor: pointer; width: 100%; height: 100%;
-      }
-      .drop-zone strong { color: #a5b4fc; }
-      #thumb-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-      .thumb-wrap {
-        position: relative; width: 56px; height: 56px;
-        border-radius: 6px; overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
-      }
-      .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .thumb-wrap .rm {
-        position: absolute; top: 2px; right: 2px;
-        background: rgba(0,0,0,0.72); border: none; color: #fff;
-        border-radius: 50%; width: 16px; height: 16px;
-        font-size: 9px; line-height: 16px; text-align: center;
-        cursor: pointer; display: none; padding: 0;
-      }
-      .thumb-wrap:hover .rm { display: block; }
-      #merge-note {
-        font-size: 11px; color: var(--muted);
-        margin-top: 5px; line-height: 1.5; display: none;
-      }
-      #merge-note span { color: #a5b4fc; }
+    :root {
+      --bg: #f0f4f9;
+      --surface: #ffffff;
+      --surface2: #e9eef6;
+      --border: #c4cdd6;
+      --text-primary: #1f2937;
+      --text-secondary: #5f6b7a;
+      --text-muted: #8a95a0;
+      --accent: #4285f4;
+      --accent-hover: #3367d6;
+      --chip-bg: #f0f4f9;
+      --chip-border: #dae0e9;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --radius-pill: 100px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+      --overlay: rgba(0,0,0,0.4);
+    }
 
-      .actions { display: flex; gap: 10px; align-items: center; }
-      button {
-        background: linear-gradient(180deg, var(--btn), #155ce6);
-        border: none; color: white; padding: 10px 14px;
-        border-radius: 10px; cursor: pointer; font-weight: 600;
-      }
-      button.secondary {
-        background: transparent; border: 1px solid rgba(255,255,255,0.06);
-        color: var(--muted); font-weight: 500;
-      }
-      #status { color: var(--muted); font-size: 13px; }
-      #outputs {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 14px; margin-top: 18px;
-      }
-      .card {
-        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-        border-radius: 12px; padding: 12px;
-        border: 1px solid rgba(255,255,255,0.03);
-        box-shadow: 0 8px 20px rgba(2,6,23,0.6);
-      }
-      .card img { width: 100%; height: auto; border-radius: 8px; display: block; }
-      .meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
-      .card .controls { margin-top: 8px; display: flex; gap: 8px; }
-      .card button { padding: 8px 10px; border-radius: 8px; font-size: 13px; }
-      @media (max-width: 880px) {
-        .prompt-box { flex-direction: column; }
-        .controls { width: 100%; flex-direction: row; flex-wrap: wrap; }
-        select#model { flex: 1; }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="app">
-      <div class="topbar">
-        <div class="logo">
-          <div class="mark">NB</div>
-          <div>
-            <div class="title">Nano Banana — Image Studio</div>
-            <div style="font-size:12px;color:var(--muted)">Generate images with Nano Banana models</div>
-          </div>
-        </div>
-      </div>
+    [data-theme="dark"] {
+      --bg: #131314;
+      --surface: #1e1f20;
+      --surface2: #2a2b2c;
+      --border: #3c3f41;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --text-muted: #5f6368;
+      --accent: #8ab4f8;
+      --accent-hover: #aecbfa;
+      --chip-bg: #2a2b2c;
+      --chip-border: #3c3f41;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.45);
+      --overlay: rgba(0,0,0,0.65);
+    }
 
-      <div class="card-panel">
-        <div class="prompt-box">
-          <textarea id="prompt" placeholder="A serene Japanese garden with cherry blossoms, watercolor style..."></textarea>
+    html, body {
+      height: 100%;
+      font-family: 'Google Sans', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      transition: background-color 0.22s ease, color 0.22s ease;
+    }
 
-          <div class="controls">
-            <label class="small">Reference images (optional, up to 8)</label>
-            <div class="drop-zone" id="drop-zone">
-              <input type="file" id="file" accept="image/*" multiple />
-              <strong>Click or drag</strong> images here
-            </div>
-            <div id="thumb-grid"></div>
-            <div id="merge-note"></div>
+    .app { min-height: 100vh; display: flex; flex-direction: column; }
 
-            <label class="small">Model</label>
-            <select id="model">
-              <option value="gemini-3.1-flash-image-preview">Nano Banana (gemini-3.1-flash)</option>
-              <option value="gemini-3-pro-image-preview">Nano Banana Pro (gemini-3-pro)</option>
-              <option value="gemini-2.5-flash-image-preview">Nano Banana 2 (gemini-2.5-flash)</option>
-            </select>
+    /* Topbar */
+    .topbar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px 10px;
+      background: var(--bg);
+      position: sticky; top: 0; z-index: 10;
+      border-bottom: 1px solid var(--chip-border);
+    }
+    .topbar-logo {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: linear-gradient(135deg, #4285f4 0%, #34a0f5 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; letter-spacing: -0.5px; flex-shrink: 0;
+    }
+    .topbar-info { flex: 1; min-width: 0; }
+    .topbar-title { font-family: 'Google Sans Display', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
+    .topbar-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+    .topbar-actions { display: flex; gap: 8px; align-items: center; }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: transparent; border: 1px solid var(--chip-border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-secondary); transition: background 0.15s; flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--chip-bg); }
 
-            <div style="display:flex;align-items:center;gap:8px">
-              <input id="compare" type="checkbox" />
-              <label for="compare" class="small">Compare</label>
-            </div>
+    /* Main */
+    .main { flex: 1; display: flex; flex-direction: column; padding: 0 14px 100px; overflow-y: auto; }
 
-            <div class="actions">
-              <button id="generate">Generate</button>
-              <button id="clear" class="secondary">Clear</button>
-            </div>
+    /* Greeting */
+    .greeting { padding: 18px 2px 12px; }
+    .greeting-hi { font-size: 13px; color: var(--text-secondary); margin-bottom: 3px; }
+    .greeting-main { font-family: 'Google Sans Display', sans-serif; font-size: 24px; font-weight: 400; color: var(--text-primary); line-height: 1.25; }
 
-            <div id="status"></div>
-          </div>
-        </div>
-      </div>
+    /* Category pills */
+    .cat-scroll {
+      display: flex; gap: 8px; overflow-x: auto;
+      padding: 0 0 10px; margin: 0 -14px; padding-left: 14px; padding-right: 14px;
+      scrollbar-width: none;
+    }
+    .cat-scroll::-webkit-scrollbar { display: none; }
+    .cat-pill {
+      flex-shrink: 0; padding: 7px 14px; border-radius: var(--radius-pill);
+      border: 1.5px solid var(--chip-border); background: var(--surface);
+      font-size: 12px; font-weight: 500; color: var(--text-secondary);
+      cursor: pointer; white-space: nowrap; transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .cat-pill:hover { background: var(--chip-bg); }
+    .cat-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    [data-theme="dark"] .cat-pill.active { color: #131314; }
 
-      <div id="outputs"></div>
+    /* Section header */
+    .section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 8px; }
+    .section-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+    .section-action { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 500; }
+
+    /* Prompt grid */
+    .prompt-grid { display: flex; flex-direction: column; gap: 8px; padding-bottom: 14px; }
+    .prompt-card {
+      background: var(--surface); border: 1.5px solid var(--chip-border); border-radius: var(--radius-md);
+      padding: 12px 14px; cursor: pointer; box-shadow: var(--shadow-sm); position: relative;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .prompt-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+    .prompt-card.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+    .prompt-card-top { display: flex; align-items: flex-start; gap: 10px; }
+    .prompt-card-emoji { font-size: 20px; flex-shrink: 0; line-height: 1.3; }
+    .prompt-card-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; flex: 1; }
+    .prompt-card-use {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent); display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .prompt-card:hover .prompt-card-use, .prompt-card.selected .prompt-card-use { opacity: 1; }
+    .prompt-card-tag { display: inline-block; margin-top: 6px; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+
+    /* AI Suggest */
+    .ai-suggest-row { display: flex; align-items: center; gap: 10px; padding: 8px 0 14px; }
+    .ai-suggest-btn {
+      flex: 1; display: flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), color-mix(in srgb, #a142f4 10%, var(--surface)));
+      border: 1.5px solid color-mix(in srgb, var(--accent) 30%, var(--chip-border));
+      border-radius: var(--radius-pill); padding: 10px 16px;
+      font-size: 13px; font-weight: 500; color: var(--accent); cursor: pointer; transition: opacity 0.15s;
+    }
+    .ai-suggest-btn:hover { opacity: 0.85; }
+    .ai-suggest-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Input card */
+    .input-card {
+      background: var(--surface); border: 1.5px solid var(--chip-border); border-radius: var(--radius-lg);
+      padding: 14px; display: flex; flex-direction: column; gap: 11px; box-shadow: var(--shadow-sm);
+    }
+    .prompt-wrap { width: 100%; }
+    .prompt-textarea {
+      width: 100%; min-height: 52px; max-height: 200px; resize: none; border: none; outline: none;
+      font-family: 'Google Sans', sans-serif; font-size: 15px; color: var(--text-primary);
+      background: transparent; line-height: 1.5; overflow-y: auto; transition: color 0.22s ease;
+    }
+    .prompt-textarea::placeholder { color: var(--text-muted); }
+    .divider { height: 1px; background: var(--chip-border); }
+    .ref-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+    .ref-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ref-upload-btn {
+      display: flex; align-items: center; gap: 6px; border: 1.5px dashed var(--border);
+      border-radius: var(--radius-sm); padding: 7px 12px;
+      font-size: 12px; font-weight: 500; color: var(--accent); cursor: pointer; background: transparent; transition: background 0.15s; white-space: nowrap;
+    }
+    .ref-upload-btn:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .ref-thumbs { display: flex; gap: 7px; flex-wrap: wrap; }
+    .ref-thumb-wrap { position: relative; width: 50px; height: 50px; }
+    .ref-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 9px; border: 1.5px solid var(--border); display: block; }
+    .ref-thumb-remove {
+      position: absolute; top: -5px; right: -5px; width: 17px; height: 17px;
+      background: var(--text-secondary); color: #fff; border: 2px solid var(--surface); border-radius: 50%;
+      font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    #ref-file-input { display: none; }
+    .model-row { display: flex; align-items: center; gap: 10px; }
+    .model-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); flex-shrink: 0; }
+    .model-select {
+      flex: 1; border: 1px solid var(--chip-border); border-radius: var(--radius-pill);
+      padding: 7px 32px 7px 12px; font-family: 'Google Sans', sans-serif; font-size: 12px;
+      color: var(--text-primary); background: var(--chip-bg); appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f6b7a' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center; outline: none; cursor: pointer;
+      transition: background-color 0.22s, color 0.22s;
+    }
+    .action-row { display: flex; align-items: center; gap: 8px; }
+    .compare-label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); cursor: pointer; user-select: none; }
+    .compare-cb { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+    .btn-generate {
+      flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
+      padding: 11px 18px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;
+    }
+    .btn-generate:hover { background: var(--accent-hover); }
+    .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; }
+    [data-theme="dark"] .btn-generate { color: #131314; }
+    .btn-clear {
+      background: transparent; color: var(--text-secondary); border: 1px solid var(--chip-border);
+      border-radius: var(--radius-pill); padding: 11px 16px; font-family: 'Google Sans', sans-serif;
+      font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-clear:hover { background: var(--chip-bg); }
+
+    /* Output */
+    .output-section { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+    .output-card { background: var(--surface); border: 1px solid var(--chip-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .output-card-header { padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--chip-border); background: var(--chip-bg); }
+    .output-card img { width: 100%; display: block; }
+    .spinner-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 36px 20px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--chip-border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner-label { font-size: 12px; color: var(--text-secondary); }
+    .error-msg { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; border-radius: var(--radius-md); padding: 11px 14px; font-size: 12px; margin: 12px; }
+    [data-theme="dark"] .error-msg { background: #2d1515; border-color: #7f1d1d; color: #fca5a5; }
+
+    /* Shared bottom sheet */
+    .sheet-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    .sheet-overlay.open { opacity: 1; pointer-events: all; }
+    .bottom-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface); border-radius: 28px 28px 0 0;
+      z-index: 201; transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+      max-height: 90vh; display: flex; flex-direction: column;
+    }
+    .bottom-sheet.open { transform: translateY(0); }
+    .sheet-handle { width: 36px; height: 4px; background: var(--chip-border); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
+    .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 8px; flex-shrink: 0; }
+    .sheet-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+    .sheet-close { font-size: 20px; color: var(--text-secondary); cursor: pointer; line-height: 1; padding: 4px; }
+
+    /* Catalog sheet */
+    .catalog-search-wrap { padding: 0 16px 10px; flex-shrink: 0; }
+    .catalog-search {
+      width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-pill);
+      padding: 10px 16px; font-family: 'Google Sans', sans-serif; font-size: 13px;
+      color: var(--text-primary); background: var(--chip-bg); outline: none; transition: border-color 0.15s;
+    }
+    .catalog-search:focus { border-color: var(--accent); }
+    .catalog-search::placeholder { color: var(--text-muted); }
+    .catalog-cats { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 10px; scrollbar-width: none; flex-shrink: 0; }
+    .catalog-cats::-webkit-scrollbar { display: none; }
+    .catalog-list { overflow-y: auto; padding: 0 16px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .catalog-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--chip-bg); border: 1.5px solid var(--chip-border); border-radius: var(--radius-md);
+      padding: 12px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .catalog-item:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+    .catalog-item.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--chip-bg)); }
+    .catalog-item-emoji { font-size: 22px; flex-shrink: 0; line-height: 1.3; }
+    .catalog-item-body { flex: 1; min-width: 0; }
+    .catalog-item-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; }
+    .catalog-item-cat { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px; }
+    .catalog-item-check {
+      width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); background: transparent;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, border-color 0.15s;
+    }
+    .catalog-item.selected .catalog-item-check { background: var(--accent); border-color: var(--accent); }
+    .catalog-item-check svg { display: none; }
+    .catalog-item.selected .catalog-item-check svg { display: block; }
+    .catalog-apply { padding: 12px 16px 30px; flex-shrink: 0; border-top: 1px solid var(--chip-border); }
+    .catalog-apply-btn {
+      width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
+      padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    .catalog-apply-btn:hover { background: var(--accent-hover); }
+    .catalog-apply-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    [data-theme="dark"] .catalog-apply-btn { color: #131314; }
+    .catalog-empty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px; }
+
+    /* Theme sheet */
+    .theme-options { display: flex; flex-direction: column; gap: 4px; padding: 0 16px 36px; }
+    .theme-option { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: var(--radius-md); cursor: pointer; border: 1.5px solid transparent; transition: background 0.15s, border-color 0.15s; }
+    .theme-option:hover { background: var(--chip-bg); }
+    .theme-option.active { background: var(--chip-bg); border-color: var(--accent); }
+    .theme-option-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .theme-option.active .theme-option-icon { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+    .theme-option-info { flex: 1; }
+    .theme-option-name { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+    .theme-option-desc { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+    .theme-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, border-color 0.15s; }
+    .theme-option.active .theme-check { background: var(--accent); border-color: var(--accent); }
+    .theme-check svg { display: none; }
+    .theme-option.active .theme-check svg { display: block; }
+
+    /* Debug */
+    .debug-btn { position: fixed; bottom: 18px; right: 14px; background: #1f2937; color: #fff; border: none; border-radius: var(--radius-pill); padding: 9px 16px; font-family: 'Google Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; box-shadow: var(--shadow-md); z-index: 50; }
+    .debug-panel { position: fixed; bottom: 56px; right: 14px; left: 14px; background: #1f2937; color: #a3e635; border-radius: var(--radius-md); padding: 14px; font-family: monospace; font-size: 11px; max-height: 38vh; overflow-y: auto; white-space: pre-wrap; word-break: break-all; z-index: 49; box-shadow: var(--shadow-md); }
+    .debug-panel.hidden { display: none; }
+
+    /* Dot animation */
+    .dot-anim { display: inline-flex; gap: 3px; align-items: center; }
+    .dot-anim span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: dotpulse 1.2s infinite ease-in-out; }
+    .dot-anim span:nth-child(2) { animation-delay: 0.2s; }
+    .dot-anim span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotpulse { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+
+    .ai-label { font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;padding:2px 0 6px; }
+    .refresh-btn { text-align:center;padding:8px 0 2px;font-size:12px;color:var(--accent);cursor:pointer;font-weight:500; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-logo">NB</div>
+    <div class="topbar-info">
+      <div class="topbar-title">Nano Banana Studio</div>
+      <div class="topbar-sub">Film Scene Image Generator</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="openCatalog()" title="Prompt Catalog">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="4" y1="14" x2="13" y2="14"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="openThemeSheet()" title="Appearance">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="greeting">
+      <div class="greeting-hi">Film Scene Preview 🎬</div>
+      <div class="greeting-main">Pick a scene,<br>generate the vision.</div>
     </div>
 
-    <!-- Hidden canvas used to merge multiple reference images into one -->
-    <canvas id="merge-canvas" style="display:none"></canvas>
+    <!-- Home category pills -->
+    <div class="cat-scroll" id="home-cats"></div>
 
-    <script src="https://js.puter.com/v2/"></script>
-    <script>
-      // ─── Multi-image state & UI ──────────────────────────────────
-      const imgFiles   = []; // Array<File>
-      const dropZone   = document.getElementById("drop-zone");
-      const fileEl     = document.getElementById("file");
-      const thumbGrid  = document.getElementById("thumb-grid");
-      const mergeNote  = document.getElementById("merge-note");
-      const mergeCanvas = document.getElementById("merge-canvas");
+    <!-- AI Suggest -->
+    <div class="ai-suggest-row">
+      <button class="ai-suggest-btn" id="ai-suggest-btn" onclick="aiSuggest()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        AI Suggest — get smart scene ideas
+      </button>
+    </div>
 
-      function addFiles(newFiles) {
-        for (const f of newFiles) {
-          if (!f.type.startsWith("image/")) continue;
-          if (imgFiles.length >= 8) { setStatus("Max 8 reference images allowed."); break; }
-          imgFiles.push(f);
-          renderThumb(f, imgFiles.length - 1);
-        }
-        updateMergeNote();
-      }
+    <div class="section-header">
+      <span class="section-title" id="home-section-title">Scene prompts</span>
+      <span class="section-action" onclick="openCatalog()">Browse all →</span>
+    </div>
+    <div class="prompt-grid" id="home-prompt-grid">
+      <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">Loading prompts…</div>
+    </div>
 
-      function renderThumb(file, idx) {
-        const wrap = document.createElement("div");
-        wrap.className = "thumb-wrap";
-        wrap.dataset.idx = idx;
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(file);
-        img.alt = file.name;
-        const rm = document.createElement("button");
-        rm.className = "rm"; rm.textContent = "✕"; rm.title = "Remove";
-        rm.addEventListener("click", (e) => {
-          e.stopPropagation();
-          imgFiles.splice(parseInt(wrap.dataset.idx), 1);
-          rebuildThumbs();
-          updateMergeNote();
-        });
-        wrap.appendChild(img); wrap.appendChild(rm);
-        thumbGrid.appendChild(wrap);
-      }
+    <!-- Input card -->
+    <div class="input-card">
+      <div class="prompt-wrap">
+        <textarea id="prompt" class="prompt-textarea"
+          placeholder="Describe the film scene, or pick one above…"
+          rows="3" oninput="autoResize(this)"></textarea>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="ref-label">Actor / Actress reference photos (optional, up to 8)</div>
+        <div class="ref-row">
+          <button class="ref-upload-btn" onclick="document.getElementById('ref-file-input').click()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            Add photos
+          </button>
+          <div class="ref-thumbs" id="ref-thumbs"></div>
+        </div>
+        <input type="file" id="ref-file-input" accept="image/*" multiple onchange="handleRefFiles(this)" />
+      </div>
+      <div class="divider"></div>
+      <div class="model-row">
+        <span class="model-label">Model</span>
+        <select id="model-select" class="model-select">
+          <option value="gemini-3.1-flash-image-preview">Nano Banana (gemini-3.1-flash)</option>
+          <option value="gemini-3-pro-image-preview">Nano Banana Pro (gemini-3-pro)</option>
+          <option value="gemini-2.5-flash-preview-image-generation">Nano Banana 2 (gemini-2.5-flash)</option>
+        </select>
+      </div>
+      <div class="divider"></div>
+      <div class="action-row">
+        <label class="compare-label">
+          <input type="checkbox" id="compare-cb" class="compare-cb" /> Compare
+        </label>
+        <button class="btn-generate" id="btn-generate" onclick="generateImage()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Generate
+        </button>
+        <button class="btn-clear" onclick="clearAll()">Clear</button>
+      </div>
+    </div>
 
-      function rebuildThumbs() {
-        thumbGrid.innerHTML = "";
-        imgFiles.forEach((f, i) => renderThumb(f, i));
-      }
+    <div class="output-section" id="output-section"></div>
+  </div>
+</div>
 
-      function updateMergeNote() {
-        const n = imgFiles.length;
-        if (n === 0) {
-          mergeNote.style.display = "none";
-        } else if (n === 1) {
-          mergeNote.style.display = "block";
-          mergeNote.innerHTML = "1 image — sent directly as <span>input_image</span>.";
-        } else {
-          mergeNote.style.display = "block";
-          mergeNote.innerHTML = "<span>" + n + " images</span> → merged into one composite via Canvas API, then sent as <span>input_image</span>.";
-        }
-      }
+<!-- Overlay -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeAllSheets()"></div>
 
-      fileEl.addEventListener("change", () => addFiles(fileEl.files));
-      dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag-over"); });
-      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
-      dropZone.addEventListener("drop", (e) => {
-        e.preventDefault(); dropZone.classList.remove("drag-over");
-        addFiles(e.dataTransfer.files);
-      });
+<!-- Catalog sheet -->
+<div class="bottom-sheet" id="catalog-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <span class="sheet-title">Prompt Catalog</span>
+    <span class="sheet-close" onclick="closeCatalog()">✕</span>
+  </div>
+  <div class="catalog-search-wrap">
+    <input type="text" class="catalog-search" id="catalog-search" placeholder="Search scenes, moods, styles…" oninput="renderCatalogList()" />
+  </div>
+  <div class="catalog-cats" id="catalog-cats"></div>
+  <div class="catalog-list" id="catalog-list"></div>
+  <div class="catalog-apply">
+    <button class="catalog-apply-btn" id="catalog-apply-btn" onclick="applySelectedPrompt()" disabled>Use this prompt</button>
+  </div>
+</div>
 
-      /**
-       * Resolves all imgFiles into a single { base64, mime } object.
-       * 1 file  → plain FileReader (original behaviour, preserves mime type).
-       * 2+ files → canvas grid stitch → single PNG base64.
-       * 0 files → null.
-       */
-      async function resolveInputImage() {
-        if (imgFiles.length === 0) return null;
-        if (imgFiles.length === 1) return readFileAsBase64(imgFiles[0]);
+<!-- Theme sheet -->
+<div class="bottom-sheet" id="theme-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <span class="sheet-title">Appearance</span>
+    <span class="sheet-close" onclick="closeThemeSheet()">✕</span>
+  </div>
+  <div class="theme-options">
+    <div class="theme-option" id="opt-light" onclick="setTheme('light')">
+      <div class="theme-option-icon">☀️</div>
+      <div class="theme-option-info"><div class="theme-option-name">Light</div><div class="theme-option-desc">Always use light theme</div></div>
+      <div class="theme-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="theme-option" id="opt-dark" onclick="setTheme('dark')">
+      <div class="theme-option-icon">🌙</div>
+      <div class="theme-option-info"><div class="theme-option-name">Dark</div><div class="theme-option-desc">Always use dark theme</div></div>
+      <div class="theme-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="theme-option" id="opt-system" onclick="setTheme('system')">
+      <div class="theme-option-icon">⚙️</div>
+      <div class="theme-option-info"><div class="theme-option-name">System default</div><div class="theme-option-desc">Follow your device setting</div></div>
+      <div class="theme-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+  </div>
+</div>
 
-        const CELL = 512;
-        const COLS = Math.min(imgFiles.length, 4);
-        const ROWS = Math.ceil(imgFiles.length / COLS);
-        mergeCanvas.width  = COLS * CELL;
-        mergeCanvas.height = ROWS * CELL;
+<!-- Debug -->
+<button class="debug-btn" onclick="toggleDebug()">Show debug</button>
+<div class="debug-panel hidden" id="debug-panel">No response yet.</div>
 
-        const ctx = mergeCanvas.getContext("2d");
-        ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, mergeCanvas.width, mergeCanvas.height);
+<script>
+// ── State ──
+let refImages = [];
+let debugLog = '';
+let allPrompts = [];
+let catalogSelectedIdx = -1;
+let catalogActiveCat = 'all';
+let homeActiveCat = 'all';
 
-        const imgs = await Promise.all(imgFiles.map(f => new Promise((res, rej) => {
-          const img = new Image();
-          img.onload = () => res(img);
-          img.onerror = rej;
-          img.src = URL.createObjectURL(f);
-        })));
+// ── Load prompts.txt ──
+async function loadPrompts() {
+  try {
+    const res = await fetch('prompts.txt');
+    if (!res.ok) throw new Error('404');
+    const text = await res.text();
+    allPrompts = parsePrompts(text);
+  } catch (e) {
+    allPrompts = getDefaultPrompts();
+  }
+  buildHomeCats();
+  renderHomePrompts();
+  buildCatalogCats();
+  renderCatalogList();
+}
 
-        imgs.forEach((img, i) => {
-          const col = i % COLS, row = Math.floor(i / COLS);
-          const x = col * CELL, y = row * CELL;
-          const scale = Math.max(CELL / img.naturalWidth, CELL / img.naturalHeight);
-          const sw = img.naturalWidth * scale, sh = img.naturalHeight * scale;
-          ctx.drawImage(img, x + (CELL - sw) / 2, y + (CELL - sh) / 2, sw, sh);
-        });
+function parsePrompts(text) {
+  return text.split('\n').reduce((acc, line) => {
+    line = line.trim();
+    if (!line || line.startsWith('#') || line.startsWith('[')) return acc;
+    const parts = line.split('|').map(p => p.trim());
+    if (parts.length >= 3) acc.push({ category: parts[0], emoji: parts[1], text: parts[2] });
+    return acc;
+  }, []);
+}
 
-        // Subtle separators between cells
-        ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 2;
-        for (let c = 1; c < COLS; c++) {
-          ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, mergeCanvas.height); ctx.stroke();
-        }
-        for (let r = 1; r < ROWS; r++) {
-          ctx.beginPath(); ctx.moveTo(0, r * CELL); ctx.lineTo(mergeCanvas.width, r * CELL); ctx.stroke();
-        }
+function getDefaultPrompts() {
+  return [
+    { category: 'Romantic Scenes', emoji: '💕', text: 'A couple standing on a rooftop at golden hour, soft bokeh city lights below, cinematic film grain, romantic Bollywood mood' },
+    { category: 'Romantic Scenes', emoji: '🌸', text: 'An actress in a flowing white dress in a cherry blossom garden, petals falling gently, soft natural light, dreamy and ethereal' },
+    { category: 'Action & Drama', emoji: '🔥', text: 'Actress running through a dramatic explosion in slow motion, debris flying, intense cinematic color grading, action movie poster feel' },
+    { category: 'Action & Drama', emoji: '⚔️', text: 'A fierce warrior woman in traditional armor standing on a cliff edge, stormy sky, dramatic backlighting, epic fantasy film' },
+    { category: 'Emotional & Intimate', emoji: '😢', text: 'Close-up portrait of an actress with a single tear, dramatic side lighting, shallow depth of field, emotionally raw and vulnerable' },
+    { category: 'Emotional & Intimate', emoji: '🪟', text: 'An actress gazing out of a rain-streaked window, reflections overlapping her face, contemplative mood, muted cool color palette' },
+    { category: 'Period & Historical', emoji: '🏯', text: 'An actress in traditional Indian silk saree in a Mughal palace courtyard, golden hour, historical epic drama cinematography' },
+    { category: 'Period & Historical', emoji: '🌺', text: 'A South Indian classical dancer in full costume performing on stage, temple backdrop, dramatic lighting, vibrant saturated colors' },
+    { category: 'Fantasy & Mystical', emoji: '🧚', text: 'A forest fairy queen surrounded by glowing fireflies, magical misty woodland, ethereal blue-green lighting, fantasy film' },
+    { category: 'Fantasy & Mystical', emoji: '🔮', text: 'An ancient sorceress casting a spell, swirling purple and gold magical energy, dark mystical forest, high fantasy visual effects' },
+    { category: 'Villain & Antagonist', emoji: '👑', text: 'A cunning queen villain on her throne, cold regal expression, deep crimson and gold tones, menacing power, game of thrones style' },
+    { category: 'Modern & Contemporary', emoji: '🏙️', text: 'A corporate power scene, actress in sleek suit at floor-to-ceiling window, city skyline, sharp modern cinematography' },
+    { category: 'Nature & Outdoor', emoji: '🏔️', text: 'An actress standing on a Himalayan peak at sunrise, wind in hair, panoramic mountain vista, raw and powerful, documentary style' },
+  ];
+}
 
-        const b64 = mergeCanvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
-        return { base64: b64, mime: "image/png" };
-      }
+// ── Home screen ──
+function getCategories() {
+  return ['all', ...new Set(allPrompts.map(p => p.category))];
+}
 
-      // ─── Original helpers (100% unchanged) ──────────────────────
-      const promptEl    = document.getElementById("prompt");
-      const modelEl     = document.getElementById("model");
-      const btn         = document.getElementById("generate");
-      const clearBtn    = document.getElementById("clear");
-      const outputs     = document.getElementById("outputs");
-      const status      = document.getElementById("status");
-      const compareCheck = document.getElementById("compare");
+function buildHomeCats() {
+  const wrap = document.getElementById('home-cats');
+  wrap.innerHTML = '';
+  getCategories().forEach(cat => {
+    const pill = document.createElement('div');
+    pill.className = 'cat-pill' + (cat === homeActiveCat ? ' active' : '');
+    pill.textContent = cat === 'all' ? '✨ All' : cat;
+    pill.onclick = () => {
+      homeActiveCat = cat;
+      document.querySelectorAll('#home-cats .cat-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      document.getElementById('home-section-title').textContent = cat === 'all' ? 'Scene prompts' : cat;
+      renderHomePrompts();
+    };
+    wrap.appendChild(pill);
+  });
+}
 
-      function setStatus(msg, busy = false) {
-        status.innerHTML = msg ? (busy ? '<span class="spinner"></span> ' + msg : msg) : "";
-      }
+function renderHomePrompts() {
+  const grid = document.getElementById('home-prompt-grid');
+  let filtered = homeActiveCat === 'all' ? allPrompts : allPrompts.filter(p => p.category === homeActiveCat);
+  const shown = [...filtered].sort(() => 0.5 - Math.random()).slice(0, 5);
+  grid.innerHTML = '';
+  if (!shown.length) { grid.innerHTML = '<div class="catalog-empty">No prompts found.</div>'; return; }
+  shown.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'prompt-card';
+    card.innerHTML = `
+      <div class="prompt-card-top">
+        <span class="prompt-card-emoji">${p.emoji}</span>
+        <span class="prompt-card-text">${p.text}</span>
+        <div class="prompt-card-use"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+      <span class="prompt-card-tag">${p.category}</span>`;
+    card.onclick = () => usePrompt(p.text, card);
+    grid.appendChild(card);
+  });
+}
 
-      function readFileAsBase64(file) {
-        return new Promise((res, rej) => {
-          if (!file) return res(null);
-          const fr = new FileReader();
-          fr.onload = () => {
-            const str = fr.result || "";
-            const comma = str.indexOf(",");
-            if (comma >= 0) res({ base64: str.slice(comma + 1), mime: str.slice(5, str.indexOf(";")) });
-            else res({ base64: str, mime: file.type || "image/png" });
-          };
-          fr.onerror = (e) => rej(e);
-          fr.readAsDataURL(file);
-        });
-      }
+function usePrompt(text, cardEl) {
+  document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
+  if (cardEl) cardEl.classList.add('selected');
+  const ta = document.getElementById('prompt');
+  ta.value = text;
+  autoResize(ta);
+  ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
-      function makeCard(title, imgEl, meta) {
-        const div = document.createElement("div"); div.className = "card";
-        const h = document.createElement("h3");
-        h.style.margin = "6px 0"; h.style.fontSize = "14px"; h.textContent = title;
-        div.appendChild(h); div.appendChild(imgEl);
-        const ctrl = document.createElement("div");
-        ctrl.style.marginTop = "8px"; ctrl.style.display = "flex"; ctrl.style.gap = "8px";
-        const openBtn = document.createElement("button");
-        openBtn.textContent = "Open";
-        openBtn.onclick = () => { const src = imgEl.src; if (!src) return; window.open(src, "_blank"); };
-        const dlBtn = document.createElement("button");
-        dlBtn.textContent = "Download";
-        dlBtn.onclick = () => {
-          const src = imgEl.src; if (!src) return;
-          const a = document.createElement("a"); a.style.display = "none"; a.href = src;
-          let ext = "png";
-          if (src.startsWith("data:")) { const m = src.match(/^data:([^;]+);/); if (m && m[1]) ext = m[1].split("/")[1] || ext; }
-          a.download = (title.replace(/[^a-z0-9\-]/gi, "_") || "image") + "." + ext;
-          document.body.appendChild(a); a.click(); a.remove();
-        };
-        ctrl.appendChild(openBtn); ctrl.appendChild(dlBtn);
-        if (meta) {
-          const metaDiv = document.createElement("div");
-          metaDiv.style.marginTop = "8px"; metaDiv.style.fontSize = "12px"; metaDiv.style.color = "#444";
-          metaDiv.innerHTML = `Model: <strong>${meta.model || "unknown"}</strong><br>Prompt: <em style="font-size:12px">${(meta.prompt || "").slice(0, 120)}</em>`;
-          if (meta.width && meta.height) metaDiv.innerHTML += `<br>Size: ${meta.width}x${meta.height}`;
-          div.appendChild(metaDiv);
-        }
-        div.appendChild(ctrl);
-        return div;
-      }
+// ── Catalog sheet ──
+function buildCatalogCats() {
+  const wrap = document.getElementById('catalog-cats');
+  wrap.innerHTML = '';
+  getCategories().forEach(cat => {
+    const pill = document.createElement('div');
+    pill.className = 'cat-pill' + (cat === catalogActiveCat ? ' active' : '');
+    pill.textContent = cat === 'all' ? '✨ All' : cat;
+    pill.onclick = () => {
+      catalogActiveCat = cat;
+      document.querySelectorAll('#catalog-cats .cat-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      renderCatalogList();
+    };
+    wrap.appendChild(pill);
+  });
+}
 
-      function isImageElement(obj) { return obj && obj.tagName && obj.tagName.toLowerCase() === "img"; }
+function renderCatalogList() {
+  const list = document.getElementById('catalog-list');
+  const q = (document.getElementById('catalog-search')?.value || '').toLowerCase();
+  let filtered = catalogActiveCat === 'all' ? allPrompts : allPrompts.filter(p => p.category === catalogActiveCat);
+  if (q) filtered = filtered.filter(p => p.text.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+  if (!filtered.length) { list.innerHTML = '<div class="catalog-empty">No prompts match your search.</div>'; return; }
+  list.innerHTML = '';
+  filtered.forEach(p => {
+    const globalIdx = allPrompts.indexOf(p);
+    const item = document.createElement('div');
+    item.className = 'catalog-item' + (catalogSelectedIdx === globalIdx ? ' selected' : '');
+    item.innerHTML = `
+      <span class="catalog-item-emoji">${p.emoji}</span>
+      <div class="catalog-item-body">
+        <div class="catalog-item-text">${p.text}</div>
+        <div class="catalog-item-cat">${p.category}</div>
+      </div>
+      <div class="catalog-item-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+    item.onclick = () => {
+      catalogSelectedIdx = globalIdx;
+      document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      document.getElementById('catalog-apply-btn').disabled = false;
+    };
+    list.appendChild(item);
+  });
+}
 
-      function normalizeToImageElement(resp) {
-        if (isImageElement(resp)) return resp;
-        if (typeof resp === "string") { const img = document.createElement("img"); img.src = resp; return img; }
-        const searchForString = (o) => {
-          if (!o || typeof o !== "object") return null;
-          const candidates = ["src","url","image","data_url","dataUrl","data","b64","base64","b64_json","output_image","output_image_base64"];
-          for (const k of candidates) {
-            if (k in o) { const v = o[k]; if (typeof v === "string") return v; if (Array.isArray(v) && v.length > 0 && typeof v[0] === "string") return v[0]; }
-          }
-          for (const k in o) {
-            const v = o[k];
-            if (typeof v === "string") return v;
-            if (Array.isArray(v)) { for (const item of v) { const found = searchForString(item); if (found) return found; } }
-            else if (typeof v === "object") { const found = searchForString(v); if (found) return found; }
-          }
-          return null;
-        };
-        const found = searchForString(resp);
-        if (found) {
-          const img = document.createElement("img");
-          if (/^data:/.test(found)) { img.src = found; return img; }
-          if (/^[A-Za-z0-9+/=\s]+$/.test(found) && found.length > 100) { img.src = "data:image/png;base64," + found.replace(/\s+/g, ""); return img; }
-          img.crossOrigin = "anonymous"; img.src = found; return img;
-        }
-        try {
-          if (resp && resp.data && Array.isArray(resp.data) && resp.data.length > 0) {
-            const d0 = resp.data[0];
-            if (d0.b64_json && typeof d0.b64_json === "string") { const img = document.createElement("img"); img.src = "data:image/png;base64," + d0.b64_json; return img; }
-          }
-        } catch (e) {}
-        const err = new Error("Failed to extract image URL from model response"); err.details = resp; throw err;
-      }
+function applySelectedPrompt() {
+  if (catalogSelectedIdx < 0) return;
+  usePrompt(allPrompts[catalogSelectedIdx].text, null);
+  closeCatalog();
+}
 
-      async function generateForModel(prompt, model, inputImageObj) {
-        const opts = { model };
-        if (inputImageObj) { opts.input_image = inputImageObj.base64; opts.input_image_mime_type = inputImageObj.mime; }
-        return await puter.ai.txt2img(prompt, opts);
-      }
+function openCatalog() {
+  catalogSelectedIdx = -1;
+  document.getElementById('catalog-apply-btn').disabled = true;
+  document.getElementById('catalog-search').value = '';
+  renderCatalogList();
+  document.getElementById('catalog-sheet').classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+}
+function closeCatalog() {
+  document.getElementById('catalog-sheet').classList.remove('open');
+  document.getElementById('sheet-overlay').classList.remove('open');
+}
 
-      // ─── Generate (only change: use resolveInputImage instead of readFileAsBase64) ──
-      btn.addEventListener("click", async () => {
-        const prompt = promptEl.value.trim();
-        if (!prompt) { setStatus("Please enter a prompt."); return; }
-        setStatus("Generating...", true);
-        outputs.innerHTML = "";
+// ── AI Suggest ──
+async function aiSuggest() {
+  const btn = document.getElementById('ai-suggest-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<div class="dot-anim"><span></span><span></span><span></span></div> Generating ideas…`;
 
-        try {
-          const n = imgFiles.length;
-          if (n > 1) setStatus("Merging " + n + " images via Canvas…", true);
-          const inputImageObj = await resolveInputImage(); // ← only change to original flow
+  const cats = [...new Set(allPrompts.map(p => p.category))].join(', ');
+  const currentPrompt = document.getElementById('prompt').value.trim();
+  const refCount = refImages.length;
 
-          const selectedModel = modelEl.value;
-          const generateBoth  = compareCheck.checked;
-          const tasks = [];
-          if (generateBoth) {
-            tasks.push({ label: "Nano Banana",     model: "gemini-3.1-flash-image-preview" });
-            tasks.push({ label: "Nano Banana Pro", model: "gemini-3-pro-image-preview" });
-          } else {
-            tasks.push({ label: selectedModel.includes("pro") ? "Nano Banana Pro" : "Nano Banana", model: selectedModel });
-          }
+  const msg = `You are a creative director for an Indian film production company.
+Generate 4 unique, vivid cinematic scene prompts for AI image generation.
+${currentPrompt ? `Build on this existing concept: "${currentPrompt}".` : 'Make them varied across different scene types.'}
+${refCount > 0 ? `The user has uploaded ${refCount} actor/actress reference photos.` : ''}
+Scene categories available: ${cats}.
+Rules:
+- Each prompt is 1-2 sentences, highly visual and cinematic
+- Include lighting, mood, color palette, and film style references  
+- Suitable for Indian/Tamil/Bollywood cinema productions
+- Return ONLY a JSON array, no other text: [{"emoji":"...","category":"...","text":"..."}]`;
 
-          for (const t of tasks) {
-            setStatus("Generating: " + t.label, true);
-            try {
-              const resp = await generateForModel(prompt, t.model, inputImageObj);
-              try { window.__lastModelResponse = resp; } catch (e) {}
-              let imgEl;
-              try {
-                imgEl = normalizeToImageElement(resp);
-              } catch (normErr) {
-                const errCard = document.createElement("div"); errCard.className = "card";
-                const title = document.createElement("h3"); title.style.margin = "6px 0"; title.style.fontSize = "14px";
-                title.textContent = t.label + " — " + t.model + " (parsing error)"; errCard.appendChild(title);
-                const pre = document.createElement("pre"); pre.style.whiteSpace = "pre-wrap"; pre.style.maxHeight = "220px"; pre.style.overflow = "auto";
-                try { pre.textContent = JSON.stringify(normErr.details || resp || normErr, null, 2); } catch (e) { pre.textContent = String(normErr.details || resp || normErr); }
-                errCard.appendChild(pre);
-                const copyBtn = document.createElement("button"); copyBtn.textContent = "Copy error details";
-                copyBtn.onclick = () => { try { navigator.clipboard.writeText(pre.textContent); } catch (e) { alert("Copy failed"); } };
-                errCard.appendChild(copyBtn); outputs.appendChild(errCard); continue;
-              }
-              const meta = { model: t.model, prompt };
-              imgEl.onload = () => { meta.width = imgEl.naturalWidth; meta.height = imgEl.naturalHeight; };
-              outputs.appendChild(makeCard(t.label + " — " + t.model, imgEl, meta));
-            } catch (err) {
-              const errCard = document.createElement("div"); errCard.className = "card";
-              const title = document.createElement("h3"); title.style.margin = "6px 0"; title.style.fontSize = "14px";
-              title.textContent = t.label + " failed"; errCard.appendChild(title);
-              const pre = document.createElement("pre"); pre.style.whiteSpace = "pre-wrap"; pre.style.maxHeight = "220px"; pre.style.overflow = "auto";
-              try {
-                if (err && err.details) pre.textContent = JSON.stringify(err.details, null, 2);
-                else if (err && err.message) pre.textContent = err.message + "\n" + (err.stack || "");
-                else pre.textContent = JSON.stringify(err, null, 2);
-              } catch (e) { pre.textContent = String(err); }
-              errCard.appendChild(pre);
-              const copyBtn = document.createElement("button"); copyBtn.textContent = "Copy error details";
-              copyBtn.onclick = () => { try { navigator.clipboard.writeText(pre.textContent); } catch (e) { alert("Copy failed"); } };
-              errCard.appendChild(copyBtn); outputs.appendChild(errCard);
-            }
-          }
-          setStatus("Done.");
-        } catch (e) {
-          console.error(e);
-          setStatus("Error: " + (e && e.message ? e.message : String(e)));
-        }
-      });
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await res.json();
+    const raw = (data.content || []).map(b => b.text || '').join('').replace(/```json|```/g, '').trim();
+    const suggestions = JSON.parse(raw);
 
-      clearBtn.addEventListener("click", () => {
-        promptEl.value = ""; fileEl.value = "";
-        imgFiles.length = 0; thumbGrid.innerHTML = "";
-        mergeNote.style.display = "none";
-        outputs.innerHTML = ""; setStatus("");
-      });
+    const grid = document.getElementById('home-prompt-grid');
+    grid.innerHTML = '';
 
-      // ─── Auth helpers (100% unchanged from original) ─────────────
-      function handleAuthNotification(payload) {
-        try {
-          const p = typeof payload === "string" ? JSON.parse(payload) : payload;
-          setStatus("Authentication completed — reloading to pick up session...", true);
-          try { localStorage.removeItem("putter_auth"); } catch (e) {}
-          setTimeout(() => location.reload(), 600);
-        } catch (e) { console.warn("Auth notification parsing failed", e); }
-      }
+    const lbl = document.createElement('div');
+    lbl.className = 'ai-label';
+    lbl.textContent = '✨ AI-generated suggestions';
+    grid.appendChild(lbl);
 
-      window.addEventListener("message", (ev) => {
-        try { if (!ev || !ev.data) return; if (ev.data.__putter_auth) handleAuthNotification(ev.data.__putter_auth); }
-        catch (e) { console.warn(e); }
-      });
+    suggestions.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'prompt-card';
+      card.innerHTML = `
+        <div class="prompt-card-top">
+          <span class="prompt-card-emoji">${p.emoji || '🎬'}</span>
+          <span class="prompt-card-text">${p.text}</span>
+          <div class="prompt-card-use"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <span class="prompt-card-tag">${p.category || 'AI Suggested'}</span>`;
+      card.onclick = () => usePrompt(p.text, card);
+      grid.appendChild(card);
+    });
 
-      window.addEventListener("storage", (ev) => {
-        try { if (!ev) return; if (ev.key === "putter_auth" && ev.newValue) handleAuthNotification(JSON.parse(ev.newValue)); }
-        catch (e) { console.warn(e); }
-      });
+    const refresh = document.createElement('div');
+    refresh.className = 'refresh-btn';
+    refresh.textContent = '↻ Generate more ideas';
+    refresh.onclick = aiSuggest;
+    grid.appendChild(refresh);
 
-      try { const existingAuth = localStorage.getItem("putter_auth"); if (existingAuth) handleAuthNotification(JSON.parse(existingAuth)); } catch (e) {}
+  } catch (err) {
+    renderHomePrompts();
+  }
 
-      // ─── Debug UI (100% unchanged from original) ─────────────────
-      (function () {
-        const dbgBtn = document.createElement("button");
-        dbgBtn.textContent = "Show debug response";
-        dbgBtn.style.cssText = "position:fixed;right:12px;bottom:12px;padding:8px 10px;z-index:9999;border-radius:8px;background:rgba(0,0,0,0.6);color:#fff;";
-        dbgBtn.onclick = () => {
-          const raw = window.__lastModelResponse;
-          const modal = document.createElement("div");
-          modal.style.cssText = "position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;";
-          const box = document.createElement("div");
-          box.style.cssText = "max-width:90%;max-height:80%;overflow:auto;background:#071028;padding:16px;border-radius:10px;color:#e6eef8;";
-          const pre = document.createElement("pre");
-          pre.style.cssText = "white-space:pre-wrap;color:#d0e6ff;font-size:12px;";
-          try { pre.textContent = raw === undefined ? "[no response captured yet]" : (typeof raw === "string" ? raw : JSON.stringify(raw, null, 2)); }
-          catch (e) { pre.textContent = String(raw); }
-          const copy = document.createElement("button"); copy.textContent = "Copy"; copy.style.marginRight = "8px";
-          copy.onclick = () => { try { navigator.clipboard.writeText(pre.textContent); copy.textContent = "Copied"; setTimeout(() => (copy.textContent = "Copy"), 900); } catch (e) { alert("copy failed"); } };
-          const close = document.createElement("button"); close.textContent = "Close"; close.onclick = () => modal.remove();
-          const actions = document.createElement("div"); actions.style.marginTop = "12px";
-          actions.appendChild(copy); actions.appendChild(close);
-          box.appendChild(pre); box.appendChild(actions); modal.appendChild(box); document.body.appendChild(modal);
-        };
-        document.body.appendChild(dbgBtn);
-      })();
-    </script>
-  </body>
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> AI Suggest — get smart scene ideas`;
+}
+
+// ── Generate ──
+async function generateImage() {
+  const prompt = document.getElementById('prompt').value.trim();
+  if (!prompt) { alert('Please enter or select a prompt.'); return; }
+
+  const model = document.getElementById('model-select').value;
+  const compare = document.getElementById('compare-cb').checked;
+  const btn = document.getElementById('btn-generate');
+  const output = document.getElementById('output-section');
+
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner" style="width:14px;height:14px;border-width:2px;margin:0"></div> Generating…`;
+  output.innerHTML = '';
+
+  const models = compare ? ['gemini-3.1-flash-image-preview', 'gemini-3-pro-image-preview'] : [model];
+
+  for (const m of models) {
+    const card = document.createElement('div');
+    card.className = 'output-card';
+    card.innerHTML = `<div class="output-card-header">${m}</div><div class="spinner-wrap"><div class="spinner"></div><div class="spinner-label">Rendering scene…</div></div>`;
+    output.appendChild(card);
+
+    try {
+      const opts = refImages.length > 0 ? { model: m, images: refImages.map(r => r.dataUrl) } : { model: m };
+      const result = await puter.ai.txt2img(prompt, opts);
+      debugLog += `\n[${m}] Success\n` + JSON.stringify(result, null, 2);
+      document.getElementById('debug-panel').textContent = debugLog;
+      result.style.width = '100%'; result.style.display = 'block';
+      card.querySelector('.spinner-wrap').replaceWith(result);
+    } catch (err) {
+      debugLog += `\n[${m}] Error: ${err.message}`;
+      document.getElementById('debug-panel').textContent = debugLog;
+      const e = document.createElement('div');
+      e.className = 'error-msg'; e.textContent = 'Error: ' + err.message;
+      card.querySelector('.spinner-wrap').replaceWith(e);
+    }
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate`;
+  output.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── Helpers ──
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 200) + 'px'; }
+
+function handleRefFiles(input) {
+  Array.from(input.files).slice(0, 8 - refImages.length).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => { refImages.push({ file, dataUrl: e.target.result }); renderThumbs(); };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function renderThumbs() {
+  const wrap = document.getElementById('ref-thumbs');
+  wrap.innerHTML = '';
+  refImages.forEach((img, i) => {
+    const div = document.createElement('div');
+    div.className = 'ref-thumb-wrap';
+    div.innerHTML = `<img src="${img.dataUrl}" class="ref-thumb"/><div class="ref-thumb-remove" onclick="removeRef(${i})">✕</div>`;
+    wrap.appendChild(div);
+  });
+}
+function removeRef(i) { refImages.splice(i, 1); renderThumbs(); }
+
+function clearAll() {
+  document.getElementById('prompt').value = '';
+  document.getElementById('prompt').style.height = 'auto';
+  refImages = []; renderThumbs();
+  document.getElementById('output-section').innerHTML = '';
+  document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
+  debugLog = ''; document.getElementById('debug-panel').textContent = 'No response yet.';
+}
+
+// ── Theme ──
+const THEME_KEY = 'nb-theme';
+const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function applyTheme(pref) {
+  const isDark = pref === 'dark' || (pref === 'system' && sysDark.matches);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.innerHTML = isDark
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
+}
+function setTheme(pref) {
+  localStorage.setItem(THEME_KEY, pref);
+  applyTheme(pref);
+  ['light','dark','system'].forEach(t => document.getElementById('opt-'+t).classList.toggle('active', t === pref));
+  setTimeout(closeThemeSheet, 200);
+}
+function openThemeSheet() { document.getElementById('theme-sheet').classList.add('open'); document.getElementById('sheet-overlay').classList.add('open'); }
+function closeThemeSheet() { document.getElementById('theme-sheet').classList.remove('open'); document.getElementById('sheet-overlay').classList.remove('open'); }
+function closeAllSheets() { closeCatalog(); closeThemeSheet(); }
+sysDark.addEventListener('change', () => { if ((localStorage.getItem(THEME_KEY)||'system')==='system') applyTheme('system'); });
+
+function toggleDebug() {
+  const p = document.getElementById('debug-panel');
+  p.classList.toggle('hidden');
+  document.querySelector('.debug-btn').textContent = p.classList.contains('hidden') ? 'Show debug' : 'Hide debug';
+}
+
+// ── Init ──
+(function init() {
+  const saved = localStorage.getItem(THEME_KEY) || 'system';
+  applyTheme(saved);
+  ['light','dark','system'].forEach(t => document.getElementById('opt-'+t).classList.toggle('active', t === saved));
+  loadPrompts();
+})();
+</script>
+</body>
 </html>
