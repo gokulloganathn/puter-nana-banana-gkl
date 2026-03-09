@@ -803,16 +803,17 @@ async function generateImage() {
     const repo  = localStorage.getItem(GH_REPO_KEY);
     const token = localStorage.getItem(GH_TOKEN_KEY);
     const canSave = !!(repo && token);
+    const mId = m.replace(/[^a-zA-Z0-9-_]/g, '-'); // safe ID: dots → dashes
 
     card.innerHTML = `
       <div class="output-card-header">
         <span>${m.replace('gemini-','').replace('-image-preview','').replace('-preview-image-generation','')}</span>
-        ${canSave ? `<button class="save-img-btn" id="save-img-${m}" onclick="saveImageToGitHub('${m}')" disabled>
+        ${canSave ? `<button class="save-img-btn" id="save-img-${mId}" onclick="saveImageToGitHub('${mId}')" disabled>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
           Save to GitHub
         </button>` : ''}
       </div>
-      <div class="spinner-wrap" id="spinner-${m}"><div class="spinner"></div><div class="spinner-label">Nano Banana rendering…</div></div>`;
+      <div class="spinner-wrap" id="spinner-${mId}"><div class="spinner"></div><div class="spinner-label">Nano Banana rendering…</div></div>`;
     output.appendChild(card);
 
     try {
@@ -825,17 +826,17 @@ async function generateImage() {
       const imgEl = await puter.ai.txt2img(prompt, opts);
       debugLog += `\n[${m}] OK`; updateDebug();
       imgEl.style.width = '100%'; imgEl.style.display = 'block';
-      imgEl.id = `gen-img-${m}`;
-      card.querySelector(`#spinner-${m}`).replaceWith(imgEl);
+      imgEl.id = `gen-img-${mId}`;
+      card.querySelector(`#spinner-${mId}`).replaceWith(imgEl);
       // Enable save button now that image exists
-      const saveBtn = document.getElementById(`save-img-${m}`);
+      const saveBtn = document.getElementById(`save-img-${mId}`);
       if (saveBtn) saveBtn.disabled = false;
     } catch (err) {
       debugLog += `\n[${m}] Error: ${err.message}`; updateDebug();
       const e = document.createElement('div');
       e.className = 'error-msg';
       e.textContent = 'Error: ' + err.message;
-      card.querySelector(`#spinner-${m}`).replaceWith(e);
+      card.querySelector(`#spinner-${mId}`).replaceWith(e);
     }
   }
 
@@ -847,11 +848,11 @@ async function generateImage() {
 // ════════════════════════════════════════
 //  SAVE GENERATED IMAGE TO GITHUB
 // ════════════════════════════════════════
-async function saveImageToGitHub(modelKey) {
-  const imgEl = document.getElementById(`gen-img-${modelKey}`);
+async function saveImageToGitHub(mId) {
+  const imgEl = document.getElementById(`gen-img-${mId}`);
   if (!imgEl) { showToast('Image not found', 'err'); return; }
 
-  const btn = document.getElementById(`save-img-${modelKey}`);
+  const btn = document.getElementById(`save-img-${mId}`);
   btn.disabled = true;
   btn.innerHTML = `<div class="spinner spinner-sm"></div>`;
 
@@ -866,7 +867,7 @@ async function saveImageToGitHub(modelKey) {
     const base64   = dataUrl.split(',')[1];
 
     // Filename: timestamp + model short name
-    const short    = modelKey.includes('flash') ? 'flash' : modelKey.includes('pro') ? 'pro' : 'nb2';
+    const short    = mId.includes('flash') ? 'flash' : mId.includes('pro') ? 'pro' : 'nb2';
     const ts       = new Date().toISOString().replace(/[:T]/g,'-').slice(0,16);
     const filename = `assets/images/${ts}-${short}.png`;
 
