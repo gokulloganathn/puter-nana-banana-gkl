@@ -1,40 +1,338 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Auth callback</title>
+    <title>Nano Banana Image Generator</title>
     <style>
+      :root {
+        --bg: #0f1724;
+        --panel: #0b1220;
+        --muted: #94a3b8;
+        --accent: #7c5cff;
+        --glass: rgba(255, 255, 255, 0.04);
+        --card: #0b1228;
+        --btn: #3b82f6;
+      }
+      html, body { height: 100%; }
       body {
-        font-family: Inter, system-ui, Arial;
-        background: #071028;
-        color: #dff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
         margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial;
+        background: linear-gradient(180deg, #071028 0%, #07192b 60%);
+        color: #e6eef8;
+        -webkit-font-smoothing: antialiased;
       }
-      .box {
-        max-width: 720px;
-        background: #071028;
-        padding: 18px;
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.03);
+      .app { max-width: 1100px; margin: 28px auto; padding: 20px; }
+      .topbar { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+      .logo { display: flex; align-items: center; gap: 10px; }
+      .logo .mark {
+        width: 40px; height: 40px; border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), #00d4ff);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; color: #061025;
       }
-      pre {
-        white-space: pre-wrap;
-        color: #cfe;
+      .title { font-size: 18px; font-weight: 600; }
+      .card-panel {
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius: 12px; padding: 18px;
+        border: 1px solid rgba(255,255,255,0.04);
+        box-shadow: 0 6px 24px rgba(2,6,23,0.6);
       }
+      .prompt-box { display: flex; gap: 12px; align-items: flex-start; }
+      textarea#prompt {
+        flex: 1; min-height: 96px; background: transparent;
+        border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;
+        padding: 14px; color: inherit; font-size: 15px; resize: vertical;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      }
+      .controls { display: flex; flex-direction: column; gap: 10px; width: 260px; }
+      select#model {
+        background: transparent; border: 1px solid rgba(255,255,255,0.06);
+        padding: 10px; border-radius: 8px; color: inherit;
+      }
+
+      /* \u2500\u2500 Multi-image drop zone \u2500\u2500 */
+      .drop-zone {
+        border: 1.5px dashed rgba(255,255,255,0.12);
+        border-radius: 8px; padding: 14px 10px; text-align: center;
+        cursor: pointer; position: relative;
+        transition: border-color 0.2s, background 0.2s;
+        font-size: 12px; color: var(--muted);
+      }
+      .drop-zone:hover, .drop-zone.drag-over {
+        border-color: var(--accent);
+        background: rgba(124,92,255,0.05);
+      }
+      .drop-zone input[type="file"] {
+        position: absolute; inset: 0; opacity: 0;
+        cursor: pointer; width: 100%; height: 100%;
+      }
+      .drop-zone strong { color: #a5b4fc; }
+      #thumb-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+      .thumb-wrap {
+        position: relative; width: 56px; height: 56px;
+        border-radius: 6px; overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+      }
+      .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .thumb-wrap .rm {
+        position: absolute; top: 2px; right: 2px;
+        background: rgba(0,0,0,0.72); border: none; color: #fff;
+        border-radius: 50%; width: 16px; height: 16px;
+        font-size: 9px; line-height: 16px; text-align: center;
+        cursor: pointer; display: none; padding: 0;
+      }
+      .thumb-wrap:hover .rm { display: block; }
+      #merge-note {
+        font-size: 11px; color: var(--muted);
+        margin-top: 5px; line-height: 1.5; display: none;
+      }
+      #merge-note span { color: #a5b4fc; }
+
+      .actions { display: flex; gap: 10px; align-items: center; }
       button {
-        padding: 8px 12px;
-        border-radius: 8px;
+        background: linear-gradient(180deg, var(--btn), #155ce6);
+        border: none; color: white; padding: 10px 14px;
+        border-radius: 10px; cursor: pointer; font-weight: 600;
+      }
+      button.secondary {
+        background: transparent; border: 1px solid rgba(255,255,255,0.06);
+        color: var(--muted); font-weight: 500;
+      }
+      #status { color: var(--muted); font-size: 13px; }
+      #outputs {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px; margin-top: 18px;
+      }
+      .card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius: 12px; padding: 12px;
+        border: 1px solid rgba(255,255,255,0.03);
+        box-shadow: 0 8px 20px rgba(2,6,23,0.6);
+      }
+      .card img { width: 100%; height: auto; border-radius: 8px; display: block; }
+      .meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+      .card .controls { margin-top: 8px; display: flex; gap: 8px; }
+      .card button { padding: 8px 10px; border-radius: 8px; font-size: 13px; }
+      @media (max-width: 880px) {
+        .prompt-box { flex-direction: column; }
+        .controls { width: 100%; flex-direction: row; flex-wrap: wrap; }
+        select#model { flex: 1; }
       }
     </style>
   </head>
   <body>
-    <div class="box">
-      <h2>Authentication callback</h2>
+    <div class="app">
+      <div class="topbar">
+        <div class="logo">
+          <div class="mark">NB</div>
+          <div>
+            <div class="title">Nano Banana \u2014 Image Studio</div>
+            <div style="font-size:12px;color:var(--muted)">Generate images with Nano Banana models</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="prompt-box">
+          <textarea id="prompt" placeholder="A serene Japanese garden with cherry blossoms, watercolor style..."></textarea>
+
+          <div class="controls">
+            <label class="small">Reference images (optional, up to 8)</label>
+            <div class="drop-zone" id="drop-zone">
+              <input type="file" id="file" accept="image/*" multiple />
+              <strong>Click or drag</strong> images here
+            </div>
+            <div id="thumb-grid"></div>
+            <div id="merge-note"></div>
+
+            <label class="small">Model</label>
+            <select id="model">
+              <option value="gemini-3.1-flash-image-preview">Nano Banana (gemini-3.1-flash)</option>
+              <option value="gemini-3-pro-image-preview">Nano Banana Pro (gemini-3-pro)</option>
+              <option value="gemini-2.5-flash-image-preview">Nano Banana 2 (gemini-2.5-flash)</option>
+            </select>
+
+            <div style="display:flex;align-items:center;gap:8px">
+              <input id="compare" type="checkbox" />
+              <label for="compare" class="small">Compare</label>
+            </div>
+
+            <div class="actions">
+              <button id="generate">Generate</button>
+              <button id="clear" class="secondary">Clear</button>
+            </div>
+
+            <div id="status"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="outputs"></div>
+    </div>
+
+    <!-- Hidden canvas used to merge multiple reference images into one -->
+    <canvas id="merge-canvas" style="display:none"></canvas>
+
+    <script src="https://js.puter.com/v2/"></script>
+    <script>
+      // \u2500\u2500\u2500 Multi-image state & UI \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+      const imgFiles   = []; // Array<File>
+      const dropZone   = document.getElementById("drop-zone");
+      const fileEl     = document.getElementById("file");
+      const thumbGrid  = document.getElementById("thumb-grid");
+      const mergeNote  = document.getElementById("merge-note");
+      const mergeCanvas = document.getElementById("merge-canvas");
+
+      function addFiles(newFiles) {
+        for (const f of newFiles) {
+          if (!f.type.startsWith("image/")) continue;
+          if (imgFiles.length >= 8) { setStatus("Max 8 reference images allowed."); break; }
+          imgFiles.push(f);
+          renderThumb(f, imgFiles.length - 1);
+        }
+        updateMergeNote();
+      }
+
+      function renderThumb(file, idx) {
+        const wrap = document.createElement("div");
+        wrap.className = "thumb-wrap";
+        wrap.dataset.idx = idx;
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.alt = file.name;
+        const rm = document.createElement("button");
+        rm.className = "rm"; rm.textContent = "\u2715"; rm.title = "Remove";
+        rm.addEventListener("click", (e) => {
+          e.stopPropagation();
+          imgFiles.splice(parseInt(wrap.dataset.idx), 1);
+          rebuildThumbs();
+          updateMergeNote();
+        });
+        wrap.appendChild(img); wrap.appendChild(rm);
+        thumbGrid.appendChild(wrap);
+      }
+
+      function rebuildThumbs() {
+        thumbGrid.innerHTML = "";
+        imgFiles.forEach((f, i) => renderThumb(f, i));
+      }
+
+      function updateMergeNote() {
+        const n = imgFiles.length;
+        if (n === 0) {
+          mergeNote.style.display = "none";
+        } else if (n === 1) {
+          mergeNote.style.display = "block";
+          mergeNote.innerHTML = "1 image \u2014 sent directly as <span>input_image</span>.";
+        } else {
+          mergeNote.style.display = "block";
+          mergeNote.innerHTML = "<span>" + n + " images</span> \u2192 merged into one composite via Canvas API, then sent as <span>input_image</span>.";
+        }
+      }
+
+      fileEl.addEventListener("change", () => addFiles(fileEl.files));
+      dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault(); dropZone.classList.remove("drag-over");
+        addFiles(e.dataTransfer.files);
+      });
+
+      /**
+       * Resolves all imgFiles into a single { base64, mime } object.
+       * 1 file  \u2192 plain FileReader (original behaviour, preserves mime type).
+       * 2+ files \u2192 canvas grid stitch \u2192 single PNG base64.
+       * 0 files \u2192 null.
+       */
+      async function resolveInputImage() {
+        if (imgFiles.length === 0) return null;
+        if (imgFiles.length === 1) return readFileAsBase64(imgFiles[0]);
+
+        const CELL = 512;
+        const COLS = Math.min(imgFiles.length, 4);
+        const ROWS = Math.ceil(imgFiles.length / COLS);
+        mergeCanvas.width  = COLS * CELL;
+        mergeCanvas.height = ROWS * CELL;
+
+        const ctx = mergeCanvas.getContext("2d");
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, mergeCanvas.width, mergeCanvas.height);
+
+        const imgs = await Promise.all(imgFiles.map(f => new Promise((res, rej) => {
+          const img = new Image();
+          img.onload = () => res(img);
+          img.onerror = rej;
+          img.src = URL.createObjectURL(f);
+        })));
+
+        imgs.forEach((img, i) => {
+          const col = i % COLS, row = Math.floor(i / COLS);
+          const x = col * CELL, y = row * CELL;
+          const scale = Math.max(CELL / img.naturalWidth, CELL / img.naturalHeight);
+          const sw = img.naturalWidth * scale, sh = img.naturalHeight * scale;
+          ctx.drawImage(img, x + (CELL - sw) / 2, y + (CELL - sh) / 2, sw, sh);
+        });
+
+        // Subtle separators between cells
+        ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 2;
+        for (let c = 1; c < COLS; c++) {
+          ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, mergeCanvas.height); ctx.stroke();
+        }
+        for (let r = 1; r < ROWS; r++) {
+          ctx.beginPath(); ctx.moveTo(0, r * CELL); ctx.lineTo(mergeCanvas.width, r * CELL); ctx.stroke();
+        }
+
+        const b64 = mergeCanvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
+        return { base64: b64, mime: "image/png" };
+      }
+
+      // \u2500\u2500\u2500 Original helpers (100% unchanged) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+      const promptEl    = document.getElementById("prompt");
+      const modelEl     = document.getElementById("model");
+      const btn         = document.getElementById("generate");
+      const clearBtn    = document.getElementById("clear");
+      const outputs     = document.getElementById("outputs");
+      const status      = document.getElementById("status");
+      const compareCheck = document.getElementById("compare");
+
+      function setStatus(msg, busy = false) {
+        status.innerHTML = msg ? (busy ? '<span class="spinner"></span> ' + msg : msg) : "";
+      }
+
+      function readFileAsBase64(file) {
+        return new Promise((res, rej) => {
+          if (!file) return res(null);
+          const fr = new FileReader();
+          fr.onload = () => {
+            const str = fr.result || "";
+            const comma = str.indexOf(",");
+            if (comma >= 0) res({ base64: str.slice(comma + 1), mime: str.slice(5, str.indexOf(";")) });
+            else res({ base64: str, mime: file.type || "image/png" });
+          };
+          fr.onerror = (e) => rej(e);
+          fr.readAsDataURL(file);
+        });
+      }
+
+      function makeCard(title, imgEl, meta) {
+        const div = document.createElement("div"); div.className = "card";
+        const h = document.createElement("h3");
+        h.style.margin = "6px 0"; h.style.fontSize = "14px"; h.textContent = title;
+        div.appendChild(h); div.appendChild(imgEl);
+        const ctrl = document.createElement("div");
+        ctrl.style.marginTop = "8px"; ctrl.style.display = "flex"; ctrl.style.gap = "8px";
+        const openBtn = document.createElement("button");
+        openBtn.textContent = "Open";
+        openBtn.onclick = () => { const src = imgEl.src; if (!src) return; window.open(src, "_blank"); };
+        const dlBtn = document.createElement("button");
+        dlBtn.textContent = "Download";
+        dlBtn.onclick = () => {
+          const src = imgEl.src; if (!src) return;
+          const a = document.createElement("a"); a.style.display = "none"; a.href = src;
+          let ext = "png";
+          if (src.startsWith("data:")) { const m = src.match(/^data:([^;]+);/      <h2>Authentication callback</h2>
       <div id="info">Processing...</div>
       <pre id="debug"></pre>
       <div style="margin-top: 12px">
