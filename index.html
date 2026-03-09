@@ -300,6 +300,131 @@
 
     .ai-label { font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;padding:2px 0 6px; }
     .refresh-btn { text-align:center;padding:8px 0 2px;font-size:12px;color:var(--accent);cursor:pointer;font-weight:500; }
+
+    /* ── Save to Catalog row ── */
+    .save-catalog-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 2px 0;
+    }
+    .save-catalog-hint {
+      font-size: 12px; color: var(--text-secondary); font-weight: 500;
+    }
+    .btn-save-catalog {
+      display: flex; align-items: center; gap: 6px;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      border-radius: var(--radius-pill);
+      padding: 7px 14px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-save-catalog:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .btn-save-catalog:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── Save Preview Sheet ── */
+    .save-preview-body { padding: 0 16px 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+    .save-field-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .save-field-value {
+      font-size: 13px; color: var(--text-primary); line-height: 1.5;
+      background: var(--chip-bg); border: 1.5px solid var(--chip-border);
+      border-radius: var(--radius-md); padding: 10px 12px;
+    }
+    .save-field-value.editable {
+      outline: none; cursor: text;
+    }
+    .save-field-value.editable:focus { border-color: var(--accent); }
+    .save-emoji-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .emoji-option {
+      font-size: 22px; padding: 6px 10px; border-radius: 10px;
+      border: 1.5px solid var(--chip-border); cursor: pointer;
+      background: var(--chip-bg); transition: border-color 0.15s, background 0.15s;
+    }
+    .emoji-option.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--chip-bg)); }
+    .save-cat-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .save-cat-option {
+      padding: 6px 12px; border-radius: var(--radius-pill);
+      border: 1.5px solid var(--chip-border); background: var(--chip-bg);
+      font-size: 12px; font-weight: 500; color: var(--text-secondary);
+      cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    }
+    .save-cat-option.active { border-color: var(--accent); color: var(--accent); }
+    .save-cat-input {
+      width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-pill);
+      padding: 8px 14px; font-family: 'Google Sans', sans-serif; font-size: 13px;
+      color: var(--text-primary); background: var(--chip-bg); outline: none;
+      transition: border-color 0.15s; margin-top: 8px;
+    }
+    .save-cat-input:focus { border-color: var(--accent); }
+    .save-cat-input::placeholder { color: var(--text-muted); }
+    .save-actions { padding: 12px 16px 30px; flex-shrink: 0; border-top: 1px solid var(--chip-border); display: flex; gap: 10px; }
+    .save-confirm-btn {
+      flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
+      padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .save-confirm-btn:hover { background: var(--accent-hover); }
+    .save-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    [data-theme="dark"] .save-confirm-btn { color: #131314; }
+    .save-cancel-btn {
+      background: transparent; color: var(--text-secondary); border: 1px solid var(--chip-border);
+      border-radius: var(--radius-pill); padding: 13px 18px; font-family: 'Google Sans', sans-serif;
+      font-size: 13px; cursor: pointer; transition: background 0.15s;
+    }
+    .save-cancel-btn:hover { background: var(--chip-bg); }
+
+    /* AI thinking state in save sheet */
+    .save-thinking {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      padding: 30px 20px; color: var(--text-secondary); font-size: 13px;
+    }
+
+    /* ── GitHub Settings Sheet ── */
+    .gh-settings-body { padding: 0 16px 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+    .gh-field-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .gh-field-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+    .gh-input {
+      width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-md);
+      padding: 10px 14px; font-family: 'Google Sans', sans-serif; font-size: 13px;
+      color: var(--text-primary); background: var(--chip-bg); outline: none; transition: border-color 0.15s;
+    }
+    .gh-input:focus { border-color: var(--accent); }
+    .gh-input::placeholder { color: var(--text-muted); }
+    .gh-status {
+      font-size: 12px; padding: 8px 12px; border-radius: var(--radius-sm);
+      display: none;
+    }
+    .gh-status.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; display: block; }
+    .gh-status.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; display: block; }
+    [data-theme="dark"] .gh-status.ok { background: #052e16; color: #6ee7b7; }
+    [data-theme="dark"] .gh-status.err { background: #2d1515; color: #fca5a5; }
+    .gh-save-btn {
+      width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
+      padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .gh-save-btn:hover { background: var(--accent-hover); }
+    [data-theme="dark"] .gh-save-btn { color: #131314; }
+    .gh-connected-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; color: #065f46;
+      background: #ecfdf5; border: 1px solid #6ee7b7;
+      padding: 3px 10px; border-radius: var(--radius-pill);
+    }
+    [data-theme="dark"] .gh-connected-badge { background: #052e16; color: #6ee7b7; }
+    .gh-dot { width: 7px; height: 7px; background: #10b981; border-radius: 50%; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #1f2937; color: #fff; padding: 10px 20px; border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 500; z-index: 300; opacity: 0;
+      transition: opacity 0.2s, transform 0.2s; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #065f46; }
+    .toast.error { background: #991b1b; }
   </style>
 </head>
 <body>
@@ -322,6 +447,12 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon">
           <circle cx="12" cy="12" r="4"/>
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="openGithubSettings()" title="GitHub Settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          <path d="M12 2v2m0 16v2M2 12h2m16 0h2"/>
         </svg>
       </button>
     </div>
@@ -360,11 +491,17 @@
       <div class="prompt-wrap">
         <textarea id="prompt" class="prompt-textarea"
           placeholder="Full prompt will appear here when you pick from catalog…"
-          rows="3" oninput="autoResize(this)"></textarea>
+          rows="3" oninput="autoResize(this); fromCatalog=false; checkCustomPrompt()"></textarea>
       </div>
       <div class="divider"></div>
-      <div>
-        <div class="ref-label">Actor / Actress reference photos (optional, up to 8)</div>
+      <!-- Save to Catalog -->
+      <div id="save-catalog-row" class="save-catalog-row" style="display:none;">
+        <div class="save-catalog-hint">✏️ Custom prompt detected</div>
+        <button class="btn-save-catalog" id="btn-save-catalog" onclick="savePromptToCatalog()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save to Catalog
+        </button>
+      </div>
         <div class="ref-row">
           <button class="ref-upload-btn" onclick="document.getElementById('ref-file-input').click()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -449,8 +586,56 @@
   </div>
 </div>
 
-<!-- Debug -->
-<button class="debug-btn" onclick="toggleDebug()">Show debug</button>
+<!-- ── Save to Catalog Sheet ── -->
+<div class="bottom-sheet" id="save-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <span class="sheet-title">Save to Catalog</span>
+    <span class="sheet-close" onclick="closeSaveSheet()">✕</span>
+  </div>
+  <div class="save-preview-body" id="save-preview-body">
+    <div class="save-thinking">
+      <div class="spinner"></div>
+      AI is reading your prompt and generating gist, category & icon…
+    </div>
+  </div>
+  <div class="save-actions" id="save-actions" style="display:none;">
+    <button class="save-cancel-btn" onclick="closeSaveSheet()">Cancel</button>
+    <button class="save-confirm-btn" id="save-confirm-btn" onclick="confirmSaveToCatalog()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+      Confirm & Save
+    </button>
+  </div>
+</div>
+
+<!-- ── GitHub Settings Sheet ── -->
+<div class="bottom-sheet" id="gh-settings-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <span class="sheet-title">GitHub Connection</span>
+    <span class="sheet-close" onclick="closeGithubSettings()">✕</span>
+  </div>
+  <div class="gh-settings-body">
+    <div>
+      <div class="gh-field-label">Repository</div>
+      <div class="gh-field-desc">Your GitHub username and repo name where prompts.txt lives.</div>
+      <input class="gh-input" id="gh-repo" placeholder="username/repo-name" />
+    </div>
+    <div>
+      <div class="gh-field-label">Personal Access Token</div>
+      <div class="gh-field-desc">Create one at github.com → Settings → Developer settings → Personal access tokens → Fine-grained. Give it <strong>Contents: Read & Write</strong> permission on your repo only. It stays on your device only.</div>
+      <input class="gh-input" id="gh-token" type="password" placeholder="github_pat_xxxxxxxxxxxx" />
+    </div>
+    <div class="gh-status" id="gh-status"></div>
+    <button class="gh-save-btn" onclick="saveGithubSettings()">Save & Test Connection</button>
+    <div id="gh-connected-wrap" style="display:none;">
+      <div class="gh-connected-badge"><div class="gh-dot"></div> Connected</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 <div class="debug-panel hidden" id="debug-panel">No response yet.</div>
 
 <script>
@@ -761,7 +946,264 @@ function clearAll() {
   refImages = []; renderThumbs();
   document.getElementById('output-section').innerHTML = '';
   document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('save-catalog-row').style.display = 'none';
+  fromCatalog = false;
   debugLog = ''; document.getElementById('debug-panel').textContent = 'No response yet.';
+}
+
+// ── GitHub Settings ──
+const GH_REPO_KEY = 'nb-gh-repo';
+const GH_TOKEN_KEY = 'nb-gh-token';
+
+function openGithubSettings() {
+  const repo = localStorage.getItem(GH_REPO_KEY) || '';
+  const token = localStorage.getItem(GH_TOKEN_KEY) || '';
+  document.getElementById('gh-repo').value = repo;
+  document.getElementById('gh-token').value = token;
+  document.getElementById('gh-status').className = 'gh-status';
+  document.getElementById('gh-status').textContent = '';
+  document.getElementById('gh-connected-wrap').style.display = repo && token ? 'block' : 'none';
+  document.getElementById('gh-settings-sheet').classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+}
+function closeGithubSettings() {
+  document.getElementById('gh-settings-sheet').classList.remove('open');
+  document.getElementById('sheet-overlay').classList.remove('open');
+}
+
+async function saveGithubSettings() {
+  const repo = document.getElementById('gh-repo').value.trim();
+  const token = document.getElementById('gh-token').value.trim();
+  const status = document.getElementById('gh-status');
+  if (!repo || !token) { status.className = 'gh-status err'; status.textContent = 'Please fill in both fields.'; return; }
+
+  status.className = 'gh-status'; status.textContent = 'Testing connection…';
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/prompts.txt`, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+    localStorage.setItem(GH_REPO_KEY, repo);
+    localStorage.setItem(GH_TOKEN_KEY, token);
+    status.className = 'gh-status ok'; status.textContent = '✅ Connected! prompts.txt found.';
+    document.getElementById('gh-connected-wrap').style.display = 'block';
+    // Update topbar settings icon to show connected
+    showToast('GitHub connected!', 'success');
+  } catch (e) {
+    status.className = 'gh-status err'; status.textContent = `❌ ${e.message}. Check repo name and token permissions.`;
+  }
+}
+
+// ── Save to Catalog ──
+let pendingSave = null; // { category, emoji, gist, text }
+
+function checkCustomPrompt() {
+  const val = document.getElementById('prompt').value.trim();
+  const row = document.getElementById('save-catalog-row');
+  // Show save button only if prompt is typed and not from catalog selection
+  if (val.length > 30 && !fromCatalog) {
+    row.style.display = 'flex';
+  } else {
+    row.style.display = 'none';
+  }
+}
+
+let fromCatalog = false;
+
+// Override usePrompt to track catalog selection
+const _origUsePrompt = usePrompt;
+function usePrompt(text, cardEl) {
+  fromCatalog = true;
+  document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
+  if (cardEl) cardEl.classList.add('selected');
+  const ta = document.getElementById('prompt');
+  ta.value = text;
+  autoResize(ta);
+  ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('save-catalog-row').style.display = 'none';
+}
+
+async function savePromptToCatalog() {
+  const promptText = document.getElementById('prompt').value.trim();
+  if (!promptText) return;
+
+  const repo = localStorage.getItem(GH_REPO_KEY);
+  const token = localStorage.getItem(GH_TOKEN_KEY);
+  if (!repo || !token) {
+    showToast('Set up GitHub connection first (⚙️ icon)', 'error');
+    openGithubSettings();
+    return;
+  }
+
+  // Open sheet in thinking state
+  document.getElementById('save-sheet').classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('save-preview-body').innerHTML = `
+    <div class="save-thinking">
+      <div class="spinner"></div>
+      AI is analysing your prompt — generating gist, category & icon…
+    </div>`;
+  document.getElementById('save-actions').style.display = 'none';
+
+  // Ask Claude to analyse the prompt
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        messages: [{
+          role: 'user',
+          content: `Analyse this cinematic image generation prompt and return ONLY a JSON object, no other text:
+{
+  "gist": "one crisp sentence (max 15 words) describing the scene context",
+  "category": "best matching category from: Villain Scenes, Throne & Palace, Library & Study, Courtroom & Power, Outdoor & Nature, Modern & Corporate, Fantasy & Supernatural — or suggest a new one if none fit",
+  "emoji": "single most fitting emoji for the scene",
+  "suggestedEmojis": ["5 alternative emojis as array"]
+}
+
+Prompt to analyse:
+"""${promptText.slice(0, 800)}"""`
+        }]
+      })
+    });
+    const data = await res.json();
+    const raw = (data.content || []).map(b => b.text || '').join('').replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(raw);
+
+    const existingCats = [...new Set(allPrompts.map(p => p.category))];
+    pendingSave = { category: parsed.category, emoji: parsed.emoji, gist: parsed.gist, text: promptText };
+
+    // Render editable preview
+    const allEmojis = [parsed.emoji, ...(parsed.suggestedEmojis || [])].slice(0, 6);
+    const catOptions = [...new Set([...existingCats, parsed.category])];
+
+    document.getElementById('save-preview-body').innerHTML = `
+      <div>
+        <div class="save-field-label">🏷️ Gist (shown in catalog)</div>
+        <div class="save-field-value editable" id="edit-gist" contenteditable="true">${parsed.gist}</div>
+      </div>
+      <div>
+        <div class="save-field-label">📁 Category</div>
+        <div class="save-cat-row" id="cat-options">
+          ${catOptions.map(c => `<div class="save-cat-option${c === parsed.category ? ' active' : ''}" onclick="selectSaveCat(this,'${c.replace(/'/g,"\\'")}'">${c}</div>`).join('')}
+        </div>
+        <input class="save-cat-input" id="custom-cat-input" placeholder="Or type a new category…" oninput="typedNewCat(this)" />
+      </div>
+      <div>
+        <div class="save-field-label">✨ Icon</div>
+        <div class="save-emoji-row" id="emoji-options">
+          ${allEmojis.map(e => `<div class="emoji-option${e === parsed.emoji ? ' active' : ''}" onclick="selectSaveEmoji(this,'${e}')">${e}</div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="save-field-label">📝 Full Prompt (read-only)</div>
+        <div class="save-field-value" style="font-size:11px;max-height:100px;overflow-y:auto;opacity:0.7;">${promptText.slice(0, 300)}${promptText.length > 300 ? '…' : ''}</div>
+      </div>`;
+
+    document.getElementById('save-actions').style.display = 'flex';
+
+  } catch (e) {
+    document.getElementById('save-preview-body').innerHTML = `<div class="save-thinking" style="color:#dc2626;">❌ AI analysis failed: ${e.message}</div>`;
+  }
+}
+
+function selectSaveCat(el, cat) {
+  document.querySelectorAll('.save-cat-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  if (pendingSave) pendingSave.category = cat;
+  document.getElementById('custom-cat-input').value = '';
+}
+function typedNewCat(el) {
+  if (el.value.trim()) {
+    document.querySelectorAll('.save-cat-option').forEach(o => o.classList.remove('active'));
+    if (pendingSave) pendingSave.category = el.value.trim();
+  }
+}
+function selectSaveEmoji(el, emoji) {
+  document.querySelectorAll('.emoji-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  if (pendingSave) pendingSave.emoji = emoji;
+}
+
+async function confirmSaveToCatalog() {
+  if (!pendingSave) return;
+
+  // Read editable fields
+  const gistEl = document.getElementById('edit-gist');
+  if (gistEl) pendingSave.gist = gistEl.textContent.trim();
+  const customCat = document.getElementById('custom-cat-input')?.value.trim();
+  if (customCat) pendingSave.category = customCat;
+
+  const btn = document.getElementById('save-confirm-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner" style="width:14px;height:14px;border-width:2px;margin:0"></div> Saving…`;
+
+  const repo = localStorage.getItem(GH_REPO_KEY);
+  const token = localStorage.getItem(GH_TOKEN_KEY);
+
+  try {
+    // 1. Get current file SHA + content
+    const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/prompts.txt`, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!getRes.ok) throw new Error('Could not read prompts.txt from GitHub');
+    const fileData = await getRes.json();
+    const currentContent = atob(fileData.content.replace(/\n/g, ''));
+    const sha = fileData.sha;
+
+    // 2. Build new line in correct format
+    const newLine = `${pendingSave.category} | ${pendingSave.emoji} | ${pendingSave.gist} | ${pendingSave.text}`;
+    const newContent = currentContent.trimEnd() + '\n' + newLine + '\n';
+
+    // 3. Push updated file
+    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/prompts.txt`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Add prompt: ${pendingSave.gist.slice(0, 60)}`,
+        content: btoa(unescape(encodeURIComponent(newContent))),
+        sha
+      })
+    });
+    if (!putRes.ok) {
+      const errData = await putRes.json();
+      throw new Error(errData.message || 'GitHub write failed');
+    }
+
+    // 4. Instantly add to local allPrompts so it shows without reload
+    allPrompts.push({ ...pendingSave });
+    buildHomeCats();
+    buildCatalogCats();
+    renderHomePrompts();
+    renderCatalogList();
+
+    closeSaveSheet();
+    showToast('✅ Saved to catalog!', 'success');
+    fromCatalog = true;
+    document.getElementById('save-catalog-row').style.display = 'none';
+    pendingSave = null;
+
+  } catch (e) {
+    showToast(`❌ ${e.message}`, 'error');
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Confirm & Save`;
+  }
+}
+
+function closeSaveSheet() {
+  document.getElementById('save-sheet').classList.remove('open');
+  document.getElementById('sheet-overlay').classList.remove('open');
+}
+
+// ── Toast ──
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => { t.className = `toast ${type}`; }, 3000);
 }
 
 // ── Theme ──
@@ -784,7 +1226,7 @@ function setTheme(pref) {
 }
 function openThemeSheet() { document.getElementById('theme-sheet').classList.add('open'); document.getElementById('sheet-overlay').classList.add('open'); }
 function closeThemeSheet() { document.getElementById('theme-sheet').classList.remove('open'); document.getElementById('sheet-overlay').classList.remove('open'); }
-function closeAllSheets() { closeCatalog(); closeThemeSheet(); }
+function closeAllSheets() { closeCatalog(); closeThemeSheet(); closeSaveSheet(); closeGithubSettings(); }
 sysDark.addEventListener('change', () => { if ((localStorage.getItem(THEME_KEY)||'system')==='system') applyTheme('system'); });
 
 function toggleDebug() {
