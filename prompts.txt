@@ -1,66 +1,7 @@
 # Nano Banana — Film Scene Prompt Catalog
 # Format: CATEGORY | EMOJI | PROMPT
-# Lines starting with # are comments and will be ignored
-# Add as many prompts as you want — they auto-load in the app
+# Lines starting with # are ignored
 
-[Romantic Scenes]
-Romantic Scenes | 💕 | A couple standing on a rooftop at golden hour, soft bokeh city lights below, cinematic film grain, romantic mood, 35mm photography style
-Romantic Scenes | 🌹 | Two people sharing a quiet moment in a candlelit restaurant, warm amber tones, shallow depth of field, intimate and elegant
-Romantic Scenes | 🌊 | A romantic beach scene at sunset, two silhouettes walking along the shore, waves crashing, golden reflections on water, cinematic widescreen
-Romantic Scenes | 🌸 | An actress in a flowing white dress in a cherry blossom garden, petals falling gently, soft natural light, dreamy and ethereal mood
-Romantic Scenes | 🌃 | A couple in a rain-soaked alley under an umbrella, reflections on wet cobblestones, moody blue lighting, cinematic noir style
-Romantic Scenes | 🎭 | A grand ballroom dance scene, crystal chandeliers, formal attire, dramatic wide shot, Bollywood musical style with rich saturated colors
-
-[Action & Drama]
-Action & Drama | 🔥 | Actress running through a dramatic explosion in slow motion, debris flying, intense cinematic color grading, action movie poster feel
-Action & Drama | ⚔️ | A fierce warrior woman in traditional armor standing on a cliff edge, stormy sky, dramatic backlighting, epic fantasy film aesthetic
-Action & Drama | 🚗 | A high-speed car chase scene through narrow city streets at night, motion blur, neon lights streaking, Hollywood blockbuster style
-Action & Drama | 🌪️ | A dramatic confrontation scene in an abandoned warehouse, dust particles in shaft of light, high contrast shadows, crime thriller aesthetic
-Action & Drama | 🏛️ | An actress delivering a powerful speech on court steps, crowd below, golden hour light, political drama cinematography
-Action & Drama | 💥 | A superhero landing pose on a rooftop, cape flowing in wind, city skyline below, dramatic storm clouds, comic book film style
-
-[Emotional & Intimate]
-Emotional & Intimate | 😢 | Close-up portrait of an actress with a single tear, dramatic side lighting, shallow depth of field, emotionally raw and vulnerable
-Emotional & Intimate | 🪟 | An actress gazing out of a rain-streaked window, reflections overlapping her face, contemplative mood, muted cool color palette
-Emotional & Intimate | 🕯️ | A quiet hospital bedside scene, soft window light, emotional family moment, documentary-style naturalistic photography
-Emotional & Intimate | 📱 | A woman alone in a dark room lit only by phone screen glow, isolation and longing, modern drama aesthetic
-Emotional & Intimate | 🌅 | A woman watching sunrise from a hilltop, hopeful and peaceful, warm golden tones, end-of-journey cinematic scene
-Emotional & Intimate | 🪞 | An actress looking at her reflection in a cracked mirror, symbolism of identity, dramatic split lighting, psychological thriller mood
-
-[Period & Historical]
-Period & Historical | 🏯 | An actress in traditional Indian silk saree standing in a palace courtyard, Mughal architecture, golden hour, historical epic drama
-Period & Historical | 🎪 | A 1920s jazz club scene, actress in flapper dress, smoky atmosphere, warm vintage tones, art deco aesthetic
-Period & Historical | ⚓ | A colonial-era port scene at dusk, tall ships in background, actress in period costume, painterly cinematic style
-Period & Historical | 🌺 | A South Indian classical dancer in full costume performing on stage, temple backdrop, dramatic lighting, vibrant colors
-Period & Historical | 📜 | A medieval European court scene, actress in royal gown, candlelit stone hall, dramatic chiaroscuro lighting
-Period & Historical | 🎎 | A traditional Japanese garden scene, actress in kimono, cherry blossoms, tatami pavilion, soft diffused natural light
-
-[Fantasy & Mystical]
-Fantasy & Mystical | 🧚 | A forest fairy queen surrounded by glowing fireflies, magical misty woodland, ethereal blue-green lighting, fantasy film aesthetic
-Fantasy & Mystical | 🔮 | An ancient sorceress casting a spell, swirling purple and gold magical energy, dark mystical forest, high fantasy visual effects
-Fantasy & Mystical | 🐉 | An actress standing before a massive dragon, epic mountain backdrop, dramatic storm lighting, Game of Thrones cinematic style
-Fantasy & Mystical | 🌙 | A moonlit rooftop scene with a mysterious woman in flowing black attire, supernatural aura, silver moonbeams, gothic romance
-Fantasy & Mystical | ✨ | An underwater palace scene with actress as a mermaid queen, bioluminescent sea creatures, deep blue fantasy atmosphere
-Fantasy & Mystical | 🗡️ | A dark elven princess in enchanted armor, glowing runes on the blade, ancient forest temple, immersive fantasy world-building
-
-[Modern & Contemporary]
-Modern & Contemporary | 🏙️ | A corporate power scene, actress in sleek suit at floor-to-ceiling office window, city skyline, sharp modern cinematography
-Modern & Contemporary | ☕ | A cozy coffee shop scene, actress reading a book, warm morning light streaming through windows, slice-of-life indie film aesthetic
-Modern & Contemporary | 🎤 | A concert stage scene, actress as rock star, dramatic stage lighting, crowd silhouettes, energy and motion blur
-Modern & Contemporary | 🌆 | A rooftop party scene at twilight, string lights, friends gathered, candid and vibrant, modern Bollywood party aesthetic
-Modern & Contemporary | 🧳 | An airport reunion scene, two people embracing, busy terminal background, emotional and authentic, handheld camera style
-Modern & Contemporary | 🎨 | An artist's studio scene, actress painting, canvas and brushes, afternoon light through skylights, bohemian creative atmosphere
-
-[Villain & Antagonist]
-Villain & Antagonist | 👑 | A cunning queen villain on her throne, cold regal expression, deep crimson and gold tones, menacing power, game of thrones style
-Villain & Antagonist | 🐍 | A femme fatale in a smoky casino, mysterious expression, emerald green satin dress, 1950s noir atmosphere
-Villain & Antagonist | 🔪 | A cold-blooded assassin in all black, urban rooftop, rain and neon reflections, stylized action thriller cinematography
-Villain & Antagonist | 🕸️ | A spider queen villain in gothic architecture, webs around her throne, baroque dark lighting, gothic horror aesthetic
-Villain & Antagonist | ⚗️ | A mad scientist villain in a dramatic lab, bubbling chemicals, lightning through tall windows, classic horror film style
-
-[Nature & Outdoor]
-Nature & Outdoor | 🏔️ | An actress standing on a Himalayan peak at sunrise, wind in hair, panoramic mountain vista, raw and powerful, documentary style
-Nature & Outdoor | 🌿 | A serene jungle scene, actress in explorer attire, dappled light through canopy, green and lush, adventure film aesthetic
-Nature & Outdoor | 🏜️ | A desert nomad scene, actress in flowing robes, sand dunes at golden hour, Lawrence of Arabia cinematic style
-Nature & Outdoor | ❄️ | A snow-covered forest scene, actress in fur coat, breath visible in cold air, winter fairy tale mood, muted cool palette
-Nature & Outdoor | 🌊 | An actress swimming underwater in crystal clear ocean, sunlight filtering down, ethereal and weightless, underwater cinematography
+[Villain Scenes]
+Villain Scenes | 🎬 | Please utilize the attached images, ensuring that no facial, hairstyle, or attire alterations are introduced. Any text or overlays present in the source material should be disregarded. Generate an image as per the following specifications: A full-body, cinematic shot, captured from a single perspective, depicting a commanding woman who embodies the archetype of a villainess, akin to a seasoned actress in a similar role. She is positioned directly in front of a young Indian male, approximately 18 years of age. The male figure is inverted—rotated 180 degrees vertically with his head pointing downwards—and leans against a pillar behind her. He is minimally clothed, wearing only half-trousers, and is barefoot and shirtless. Her stance conveys dominance; she faces the camera directly and deliberately raises one leg, positioning the pointed heel of her stiletto heels in close proximity to the inverted man's face. The scene is set within an opulent, classical interior characterized by dark wood accents, heavy gold and brown curtains, and dimly illuminated bookshelves in the background. These elements collectively amplify the dramatic and villainous atmosphere. Prioritize deep shadows, rich textures, and dramatic lighting to achieve a high-contrast, intense visual composition
+Villain Scenes | 👑 | Strictly base the entire artwork on the attached reference images: perfectly match and replicate the exact attire details, facial structure/texture, skin tone, hair style, color palette, lighting mood, and artistic originality from the provided images — no deviations allowed in these elements. Create a single cinematic full-body composition from one fixed viewpoint in a grand, atmospheric classical interior featuring ornate antique wooden desk, rich dark wood tones, warm golden-brown heavy drapery, and softly illuminated background bookshelves. The central figure is a powerful, poised fictional female character seated commandingly at the desk, exuding intense authority and focused presence. In the low, enclosed space directly beneath the desk, a stylized young adult male figure (late-teens artistic interpretation with South Asian aesthetic features taken exactly from the attached reference) is positioned in a compact, low arrangement. He wears the precise minimal lower garment shown in the reference, barefoot, with upper body uncovered, conveying dramatic emotional intensity, visible physical strain, and heightened tension through expression and posture. The under-desk area incorporates an elaborate, sleek, artistic structural framework of precision-engineered supports, articulated positioning elements, and integrated bracing components that hold the figure completely steady and fixed in place, strengthening the symbolic composition, spatial drama, and thematic tension. The seated figure maintains a strong forward gaze while gracefully extending one leg into the lower space, with the elegant pointed tip of her stiletto heels placed in very close, deliberate artistic proximity to multiple areas of the lower figure's form (central region, upper body area, near facial zone), as though capturing layered, sequential moments of poised interaction. The second footwear is positioned in similarly intimate artistic relation, evoking themes of decisive weight, presence, and controlled balance. Render everything with deep dramatic chiaroscuro lighting, rich textures, strong shadow play, and high-contrast cinematic atmosphere to emphasize a powerful symbolic narrative of feminine command, spatial dominance, and intense dramatic storytelling — while preserving exact visual match to the attached images in character appearance, clothing, colors, and style
