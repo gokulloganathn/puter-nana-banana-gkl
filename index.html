@@ -5,426 +5,237 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Female Dominance Studio</title>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Google+Sans+Display:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://js.puter.com/v2/"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f0f4f9;
-      --surface: #ffffff;
-      --surface2: #e9eef6;
-      --border: #c4cdd6;
-      --text-primary: #1f2937;
-      --text-secondary: #5f6b7a;
-      --text-muted: #8a95a0;
-      --accent: #4285f4;
-      --accent-hover: #3367d6;
-      --chip-bg: #f0f4f9;
-      --chip-border: #dae0e9;
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --radius-pill: 100px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
-      --overlay: rgba(0,0,0,0.4);
+      --bg: #f0f4f9; --surface: #ffffff; --surface2: #e9eef6;
+      --border: #c4cdd6; --text-primary: #1f2937; --text-secondary: #5f6b7a;
+      --text-muted: #8a95a0; --accent: #4285f4; --accent-hover: #3367d6;
+      --chip-bg: #f0f4f9; --chip-border: #dae0e9;
+      --radius-lg: 24px; --radius-md: 16px; --radius-sm: 12px; --radius-pill: 100px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08); --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+      --overlay: rgba(0,0,0,0.4); --fav: #f59e0b; --video: #8b5cf6;
     }
-
     [data-theme="dark"] {
-      --bg: #131314;
-      --surface: #1e1f20;
-      --surface2: #2a2b2c;
-      --border: #3c3f41;
-      --text-primary: #e8eaed;
-      --text-secondary: #9aa0a6;
-      --text-muted: #5f6368;
-      --accent: #8ab4f8;
-      --accent-hover: #aecbfa;
-      --chip-bg: #2a2b2c;
-      --chip-border: #3c3f41;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.45);
+      --bg: #131314; --surface: #1e1f20; --surface2: #2a2b2c;
+      --border: #3c3f41; --text-primary: #e8eaed; --text-secondary: #9aa0a6;
+      --text-muted: #5f6368; --accent: #8ab4f8; --accent-hover: #aecbfa;
+      --chip-bg: #2a2b2c; --chip-border: #3c3f41;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3); --shadow-md: 0 4px 16px rgba(0,0,0,0.45);
       --overlay: rgba(0,0,0,0.65);
     }
-
-    html, body {
-      height: 100%;
-      font-family: 'Google Sans', 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text-primary);
-      transition: background-color 0.22s ease, color 0.22s ease;
-    }
-
+    html, body { height: 100%; font-family: 'Google Sans', sans-serif; background: var(--bg); color: var(--text-primary); transition: background .22s, color .22s; }
     .app { min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* Topbar */
-    .topbar {
-      display: flex; align-items: center; gap: 10px;
-      padding: 14px 16px 10px;
-      background: var(--bg);
-      position: sticky; top: 0; z-index: 10;
-      border-bottom: 1px solid var(--chip-border);
-    }
-    .topbar-logo {
-      width: 38px; height: 38px; border-radius: 11px;
-      background: linear-gradient(135deg, #4285f4 0%, #34a0f5 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 700; color: #fff; letter-spacing: -0.5px; flex-shrink: 0;
-    }
+    /* ── Topbar ── */
+    .topbar { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; background: var(--bg); position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--chip-border); }
+    .topbar-logo { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg,#4285f4,#34a0f5); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
     .topbar-info { flex: 1; min-width: 0; }
     .topbar-title { font-family: 'Google Sans Display', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
     .topbar-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
-    .topbar-actions { display: flex; gap: 8px; align-items: center; }
-    .icon-btn {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: transparent; border: 1px solid var(--chip-border);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: var(--text-secondary); transition: background 0.15s; flex-shrink: 0;
-    }
+    .topbar-actions { display: flex; gap: 6px; }
+    .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: transparent; border: 1px solid var(--chip-border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); transition: background .15s; flex-shrink: 0; position: relative; }
     .icon-btn:hover { background: var(--chip-bg); }
+    .gh-dot { position: absolute; bottom: 1px; right: 1px; width: 8px; height: 8px; border-radius: 50%; background: #10b981; border: 2px solid var(--bg); display: none; }
+    .gh-dot.on { display: block; }
 
-    /* Main */
-    .main { flex: 1; display: flex; flex-direction: column; padding: 0 14px 100px; overflow-y: auto; }
+    /* ── Main ── */
+    .main { flex: 1; display: flex; flex-direction: column; padding: 0 14px 110px; }
 
     /* Greeting */
-    .greeting { padding: 18px 2px 12px; }
+    .greeting { padding: 18px 2px 10px; }
     .greeting-hi { font-size: 13px; color: var(--text-secondary); margin-bottom: 3px; }
     .greeting-main { font-family: 'Google Sans Display', sans-serif; font-size: 24px; font-weight: 400; color: var(--text-primary); line-height: 1.25; }
 
+    /* Tabs */
+    .tab-bar { display: flex; gap: 6px; padding: 10px 0 14px; }
+    .tab-btn { flex: 1; padding: 9px 6px; border-radius: var(--radius-pill); border: 1.5px solid var(--chip-border); background: var(--surface); font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all .15s; }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    [data-theme="dark"] .tab-btn.active { color: #131314; }
+    .tab-btn.video-tab.active { background: var(--video); border-color: var(--video); }
+
     /* Category pills */
-    .cat-scroll {
-      display: flex; gap: 8px; overflow-x: auto;
-      padding: 0 0 10px; margin: 0 -14px; padding-left: 14px; padding-right: 14px;
-      scrollbar-width: none;
-    }
+    .cat-scroll { display: flex; gap: 8px; overflow-x: auto; margin: 0 -14px; padding: 0 14px 10px; scrollbar-width: none; }
     .cat-scroll::-webkit-scrollbar { display: none; }
-    .cat-pill {
-      flex-shrink: 0; padding: 7px 14px; border-radius: var(--radius-pill);
-      border: 1.5px solid var(--chip-border); background: var(--surface);
-      font-size: 12px; font-weight: 500; color: var(--text-secondary);
-      cursor: pointer; white-space: nowrap; transition: background 0.15s, border-color 0.15s, color 0.15s;
-    }
-    .cat-pill:hover { background: var(--chip-bg); }
+    .cat-pill { flex-shrink: 0; padding: 7px 14px; border-radius: var(--radius-pill); border: 1.5px solid var(--chip-border); background: var(--surface); font-size: 12px; font-weight: 500; color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: all .15s; }
     .cat-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
     [data-theme="dark"] .cat-pill.active { color: #131314; }
+    .cat-pill.video-active { background: var(--video); border-color: var(--video); color: #fff; }
 
     /* Section header */
-    .section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 8px; }
-    .section-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; }
+    .section-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .6px; }
     .section-action { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 500; }
 
-    /* Prompt grid */
+    /* Prompt cards */
     .prompt-grid { display: flex; flex-direction: column; gap: 8px; padding-bottom: 14px; }
-    .prompt-card {
-      background: var(--surface); border: 1.5px solid var(--chip-border); border-radius: var(--radius-md);
-      padding: 12px 14px; cursor: pointer; box-shadow: var(--shadow-sm); position: relative;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .prompt-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
-    .prompt-card.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+    .prompt-card { background: var(--surface); border: 1.5px solid var(--chip-border); border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; box-shadow: var(--shadow-sm); transition: border-color .15s; }
+    .prompt-card:hover { border-color: var(--accent); }
+    .prompt-card.selected { border-color: var(--accent); background: color-mix(in srgb,var(--accent) 8%,var(--surface)); }
     .prompt-card-top { display: flex; align-items: flex-start; gap: 10px; }
-    .prompt-card-emoji { font-size: 20px; flex-shrink: 0; line-height: 1.3; }
+    .prompt-card-emoji { font-size: 20px; flex-shrink: 0; line-height: 1.35; }
     .prompt-card-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; flex: 1; }
-    .prompt-card-use {
-      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
-      background: var(--accent); display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.15s;
-    }
+    .prompt-card-use { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .15s; flex-shrink: 0; }
     .prompt-card:hover .prompt-card-use, .prompt-card.selected .prompt-card-use { opacity: 1; }
-    .prompt-card-tag { display: inline-block; margin-top: 6px; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
-
-    /* AI Suggest */
-    .ai-suggest-row { display: flex; align-items: center; gap: 10px; padding: 8px 0 14px; }
-    .ai-suggest-btn {
-      flex: 1; display: flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), color-mix(in srgb, #a142f4 10%, var(--surface)));
-      border: 1.5px solid color-mix(in srgb, var(--accent) 30%, var(--chip-border));
-      border-radius: var(--radius-pill); padding: 10px 16px;
-      font-size: 13px; font-weight: 500; color: var(--accent); cursor: pointer; transition: opacity 0.15s;
-    }
-    .ai-suggest-btn:hover { opacity: 0.85; }
-    .ai-suggest-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .prompt-card-footer { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .prompt-card-tag { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; }
+    .video-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: var(--radius-pill); background: color-mix(in srgb,var(--video) 15%,var(--chip-bg)); color: var(--video); text-transform: uppercase; letter-spacing: .3px; }
+    .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
 
     /* Input card */
-    .input-card {
-      background: var(--surface); border: 1.5px solid var(--chip-border); border-radius: var(--radius-lg);
-      padding: 14px; display: flex; flex-direction: column; gap: 11px; box-shadow: var(--shadow-sm);
-    }
-    .prompt-wrap { width: 100%; }
-    .prompt-textarea {
-      width: 100%; min-height: 52px; max-height: 200px; resize: none; border: none; outline: none;
-      font-family: 'Google Sans', sans-serif; font-size: 15px; color: var(--text-primary);
-      background: transparent; line-height: 1.5; overflow-y: auto; transition: color 0.22s ease;
-    }
+    .input-card { background: var(--surface); border: 1.5px solid var(--chip-border); border-radius: var(--radius-lg); padding: 14px; display: flex; flex-direction: column; gap: 11px; box-shadow: var(--shadow-sm); }
+    .prompt-textarea { width: 100%; min-height: 52px; max-height: 200px; resize: none; border: none; outline: none; font-family: 'Google Sans', sans-serif; font-size: 15px; color: var(--text-primary); background: transparent; line-height: 1.5; overflow-y: auto; }
     .prompt-textarea::placeholder { color: var(--text-muted); }
     .divider { height: 1px; background: var(--chip-border); }
+
+    /* Save prompt row */
+    .save-prompt-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .save-prompt-hint { font-size: 12px; color: var(--text-secondary); }
+    .btn-save-prompt { display: flex; align-items: center; gap: 5px; background: transparent; border: 1.5px solid var(--accent); color: var(--accent); border-radius: var(--radius-pill); padding: 7px 13px; font-family: 'Google Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-save-prompt:hover { background: color-mix(in srgb,var(--accent) 10%,transparent); }
+    .btn-save-prompt:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Ref photos */
     .ref-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
     .ref-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .ref-upload-btn {
-      display: flex; align-items: center; gap: 6px; border: 1.5px dashed var(--border);
-      border-radius: var(--radius-sm); padding: 7px 12px;
-      font-size: 12px; font-weight: 500; color: var(--accent); cursor: pointer; background: transparent; transition: background 0.15s; white-space: nowrap;
-    }
-    .ref-upload-btn:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .ref-upload-btn { display: flex; align-items: center; gap: 6px; border: 1.5px dashed var(--border); border-radius: var(--radius-sm); padding: 7px 12px; font-size: 12px; font-weight: 500; color: var(--accent); cursor: pointer; background: transparent; white-space: nowrap; }
     .ref-thumbs { display: flex; gap: 7px; flex-wrap: wrap; }
     .ref-thumb-wrap { position: relative; width: 50px; height: 50px; }
     .ref-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 9px; border: 1.5px solid var(--border); display: block; }
-    .ref-thumb-remove {
-      position: absolute; top: -5px; right: -5px; width: 17px; height: 17px;
-      background: var(--text-secondary); color: #fff; border: 2px solid var(--surface); border-radius: 50%;
-      font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer;
-    }
+    .ref-thumb-remove { position: absolute; top: -5px; right: -5px; width: 17px; height: 17px; background: var(--text-secondary); color: #fff; border: 2px solid var(--surface); border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     #ref-file-input { display: none; }
+
+    /* Model + action row */
     .model-row { display: flex; align-items: center; gap: 10px; }
     .model-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); flex-shrink: 0; }
-    .model-select {
-      flex: 1; border: 1px solid var(--chip-border); border-radius: var(--radius-pill);
-      padding: 7px 32px 7px 12px; font-family: 'Google Sans', sans-serif; font-size: 12px;
-      color: var(--text-primary); background: var(--chip-bg); appearance: none; -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f6b7a' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 10px center; outline: none; cursor: pointer;
-      transition: background-color 0.22s, color 0.22s;
-    }
+    .model-select { flex: 1; border: 1px solid var(--chip-border); border-radius: var(--radius-pill); padding: 7px 32px 7px 12px; font-family: 'Google Sans', sans-serif; font-size: 12px; color: var(--text-primary); background: var(--chip-bg); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f6b7a' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; outline: none; cursor: pointer; }
     .action-row { display: flex; align-items: center; gap: 8px; }
     .compare-label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); cursor: pointer; user-select: none; }
     .compare-cb { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
-    .btn-generate {
-      flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
-      padding: 11px 18px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;
-    }
+    .btn-generate { flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill); padding: 11px 18px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .15s; }
     .btn-generate:hover { background: var(--accent-hover); }
-    .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-generate:disabled { opacity: .6; cursor: not-allowed; }
     [data-theme="dark"] .btn-generate { color: #131314; }
-    .btn-clear {
-      background: transparent; color: var(--text-secondary); border: 1px solid var(--chip-border);
-      border-radius: var(--radius-pill); padding: 11px 16px; font-family: 'Google Sans', sans-serif;
-      font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s;
-    }
-    .btn-clear:hover { background: var(--chip-bg); }
+    .btn-clear { background: transparent; color: var(--text-secondary); border: 1px solid var(--chip-border); border-radius: var(--radius-pill); padding: 11px 16px; font-family: 'Google Sans', sans-serif; font-size: 13px; cursor: pointer; }
 
     /* Output */
     .output-section { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
     .output-card { background: var(--surface); border: 1px solid var(--chip-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
-    .output-card-header { padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--chip-border); background: var(--chip-bg); }
+    .output-card-header { padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--chip-border); background: var(--chip-bg); display: flex; align-items: center; justify-content: space-between; }
     .output-card img { width: 100%; display: block; }
+    .save-img-btn { display: flex; align-items: center; gap: 5px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill); padding: 5px 12px; font-family: 'Google Sans', sans-serif; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .save-img-btn:disabled { opacity: .5; cursor: not-allowed; }
+    [data-theme="dark"] .save-img-btn { color: #131314; }
     .spinner-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 36px 20px; }
-    .spinner { width: 32px; height: 32px; border: 3px solid var(--chip-border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--chip-border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+    .spinner-sm { width: 14px; height: 14px; border-width: 2px; margin: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .spinner-label { font-size: 12px; color: var(--text-secondary); }
     .error-msg { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; border-radius: var(--radius-md); padding: 11px 14px; font-size: 12px; margin: 12px; }
     [data-theme="dark"] .error-msg { background: #2d1515; border-color: #7f1d1d; color: #fca5a5; }
 
-    /* Shared bottom sheet */
-    .sheet-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    /* ── Bottom sheets ── */
+    .sheet-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .25s; }
     .sheet-overlay.open { opacity: 1; pointer-events: all; }
-    .bottom-sheet {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--surface); border-radius: 28px 28px 0 0;
-      z-index: 201; transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
-      max-height: 90vh; display: flex; flex-direction: column;
-    }
+    .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-radius: 28px 28px 0 0; z-index: 201; transform: translateY(100%); transition: transform .3s cubic-bezier(.34,1.2,.64,1); max-height: 90vh; display: flex; flex-direction: column; }
     .bottom-sheet.open { transform: translateY(0); }
     .sheet-handle { width: 36px; height: 4px; background: var(--chip-border); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
     .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 8px; flex-shrink: 0; }
-    .sheet-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
-    .sheet-close { font-size: 20px; color: var(--text-secondary); cursor: pointer; line-height: 1; padding: 4px; }
+    .sheet-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .6px; }
+    .sheet-close { font-size: 20px; color: var(--text-secondary); cursor: pointer; padding: 4px; line-height: 1; }
 
     /* Catalog sheet */
     .catalog-search-wrap { padding: 0 16px 10px; flex-shrink: 0; }
-    .catalog-search {
-      width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-pill);
-      padding: 10px 16px; font-family: 'Google Sans', sans-serif; font-size: 13px;
-      color: var(--text-primary); background: var(--chip-bg); outline: none; transition: border-color 0.15s;
-    }
+    .catalog-search { width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-pill); padding: 10px 16px; font-family: 'Google Sans', sans-serif; font-size: 13px; color: var(--text-primary); background: var(--chip-bg); outline: none; }
     .catalog-search:focus { border-color: var(--accent); }
     .catalog-search::placeholder { color: var(--text-muted); }
     .catalog-cats { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 10px; scrollbar-width: none; flex-shrink: 0; }
     .catalog-cats::-webkit-scrollbar { display: none; }
-    .catalog-list { overflow-y: auto; padding: 0 16px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-    .catalog-item {
-      display: flex; align-items: flex-start; gap: 12px;
-      background: var(--chip-bg); border: 1.5px solid var(--chip-border); border-radius: var(--radius-md);
-      padding: 12px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .catalog-item:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
-    .catalog-item.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--chip-bg)); }
+    .catalog-list { overflow-y: auto; padding: 0 16px 8px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .catalog-item { display: flex; align-items: flex-start; gap: 12px; background: var(--chip-bg); border: 1.5px solid var(--chip-border); border-radius: var(--radius-md); padding: 12px; cursor: pointer; transition: border-color .15s; }
+    .catalog-item:hover { border-color: var(--accent); }
+    .catalog-item.selected { border-color: var(--accent); background: color-mix(in srgb,var(--accent) 8%,var(--chip-bg)); }
     .catalog-item-emoji { font-size: 22px; flex-shrink: 0; line-height: 1.3; }
     .catalog-item-body { flex: 1; min-width: 0; }
     .catalog-item-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; }
-    .catalog-item-cat { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px; }
-    .catalog-item-check {
-      width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); background: transparent;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, border-color 0.15s;
-    }
+    .catalog-item-cat { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; margin-top: 4px; }
+    .catalog-item-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .catalog-item.selected .catalog-item-check { background: var(--accent); border-color: var(--accent); }
     .catalog-item-check svg { display: none; }
     .catalog-item.selected .catalog-item-check svg { display: block; }
     .catalog-apply { padding: 12px 16px 30px; flex-shrink: 0; border-top: 1px solid var(--chip-border); }
-    .catalog-apply-btn {
-      width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
-      padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s;
-    }
-    .catalog-apply-btn:hover { background: var(--accent-hover); }
-    .catalog-apply-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .catalog-apply-btn { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill); padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .catalog-apply-btn:disabled { opacity: .4; cursor: not-allowed; }
     [data-theme="dark"] .catalog-apply-btn { color: #131314; }
-    .catalog-empty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px; }
+
+    /* Save prompt sheet */
+    .save-body { padding: 0 16px 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+    .field-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+    .field-input { width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-md); padding: 10px 14px; font-family: 'Google Sans', sans-serif; font-size: 13px; color: var(--text-primary); background: var(--chip-bg); outline: none; }
+    .field-input:focus { border-color: var(--accent); }
+    .field-input::placeholder { color: var(--text-muted); }
+    .field-textarea { min-height: 70px; resize: none; line-height: 1.5; }
+    .type-row { display: flex; gap: 8px; }
+    .type-opt { flex: 1; padding: 9px; border-radius: var(--radius-md); border: 1.5px solid var(--chip-border); background: var(--chip-bg); font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all .15s; }
+    .type-opt.active-img { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb,var(--accent) 8%,var(--chip-bg)); }
+    .type-opt.active-vid { border-color: var(--video); color: var(--video); background: color-mix(in srgb,var(--video) 8%,var(--chip-bg)); }
+    .sheet-actions { padding: 12px 16px 30px; flex-shrink: 0; border-top: 1px solid var(--chip-border); display: flex; gap: 10px; }
+    .btn-confirm { flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill); padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; }
+    .btn-confirm:disabled { opacity: .5; cursor: not-allowed; }
+    [data-theme="dark"] .btn-confirm { color: #131314; }
+    .btn-cancel { background: transparent; color: var(--text-secondary); border: 1px solid var(--chip-border); border-radius: var(--radius-pill); padding: 13px 18px; font-family: 'Google Sans', sans-serif; font-size: 13px; cursor: pointer; }
+
+    /* Settings sheet */
+    .settings-body { padding: 0 16px 30px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+    .settings-card { background: var(--chip-bg); border: 1px solid var(--chip-border); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .settings-card-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .settings-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+    .settings-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+    .settings-input { width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-md); padding: 10px 14px; font-family: 'Google Sans', sans-serif; font-size: 13px; color: var(--text-primary); background: var(--surface); outline: none; }
+    .settings-input:focus { border-color: var(--accent); }
+    .settings-input::placeholder { color: var(--text-muted); }
+    .settings-btn { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill); padding: 11px; font-family: 'Google Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
+    [data-theme="dark"] .settings-btn { color: #131314; }
+    .status-msg { font-size: 12px; padding: 8px 12px; border-radius: var(--radius-sm); display: none; }
+    .status-msg.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; display: block; }
+    .status-msg.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; display: block; }
+    [data-theme="dark"] .status-msg.ok { background: #052e16; color: #6ee7b7; }
+    [data-theme="dark"] .status-msg.err { background: #2d1515; color: #fca5a5; }
+    .connected-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #065f46; background: #ecfdf5; border: 1px solid #6ee7b7; padding: 4px 12px; border-radius: var(--radius-pill); }
+    [data-theme="dark"] .connected-badge { background: #052e16; color: #6ee7b7; }
+    .connected-dot { width: 7px; height: 7px; background: #10b981; border-radius: 50%; }
 
     /* Theme sheet */
     .theme-options { display: flex; flex-direction: column; gap: 4px; padding: 0 16px 36px; }
-    .theme-option { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: var(--radius-md); cursor: pointer; border: 1.5px solid transparent; transition: background 0.15s, border-color 0.15s; }
-    .theme-option:hover { background: var(--chip-bg); }
-    .theme-option.active { background: var(--chip-bg); border-color: var(--accent); }
-    .theme-option-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-    .theme-option.active .theme-option-icon { background: color-mix(in srgb, var(--accent) 15%, transparent); }
-    .theme-option-info { flex: 1; }
-    .theme-option-name { font-size: 15px; font-weight: 500; color: var(--text-primary); }
-    .theme-option-desc { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
-    .theme-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, border-color 0.15s; }
-    .theme-option.active .theme-check { background: var(--accent); border-color: var(--accent); }
+    .theme-opt { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border-radius: var(--radius-md); cursor: pointer; border: 1.5px solid transparent; transition: all .15s; }
+    .theme-opt:hover { background: var(--chip-bg); }
+    .theme-opt.active { background: var(--chip-bg); border-color: var(--accent); }
+    .theme-opt-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .theme-opt-name { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+    .theme-opt-desc { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+    .theme-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .theme-opt.active .theme-check { background: var(--accent); border-color: var(--accent); }
     .theme-check svg { display: none; }
-    .theme-option.active .theme-check svg { display: block; }
+    .theme-opt.active .theme-check svg { display: block; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(16px); background: #1f2937; color: #fff; padding: 10px 20px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 500; z-index: 400; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; white-space: nowrap; max-width: 90vw; text-align: center; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.ok { background: #065f46; }
+    .toast.err { background: #991b1b; }
 
     /* Debug */
-    .debug-btn { position: fixed; bottom: 18px; right: 14px; background: #1f2937; color: #fff; border: none; border-radius: var(--radius-pill); padding: 9px 16px; font-family: 'Google Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; box-shadow: var(--shadow-md); z-index: 50; }
-    .debug-panel { position: fixed; bottom: 56px; right: 14px; left: 14px; background: #1f2937; color: #a3e635; border-radius: var(--radius-md); padding: 14px; font-family: monospace; font-size: 11px; max-height: 38vh; overflow-y: auto; white-space: pre-wrap; word-break: break-all; z-index: 49; box-shadow: var(--shadow-md); }
+    .debug-btn { position: fixed; bottom: 18px; right: 14px; background: #1f2937; color: #fff; border: none; border-radius: var(--radius-pill); padding: 9px 16px; font-family: 'Google Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; z-index: 50; }
+    .debug-panel { position: fixed; bottom: 56px; right: 14px; left: 14px; background: #1f2937; color: #a3e635; border-radius: var(--radius-md); padding: 14px; font-family: monospace; font-size: 11px; max-height: 38vh; overflow-y: auto; white-space: pre-wrap; word-break: break-all; z-index: 49; }
     .debug-panel.hidden { display: none; }
 
-    /* Dot animation */
+    /* Misc */
     .dot-anim { display: inline-flex; gap: 3px; align-items: center; }
-    .dot-anim span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: dotpulse 1.2s infinite ease-in-out; }
-    .dot-anim span:nth-child(2) { animation-delay: 0.2s; }
-    .dot-anim span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes dotpulse { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
-
-    .ai-label { font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;padding:2px 0 6px; }
-    .refresh-btn { text-align:center;padding:8px 0 2px;font-size:12px;color:var(--accent);cursor:pointer;font-weight:500; }
-
-    /* ── Save to Catalog row ── */
-    .save-catalog-row {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 2px 0;
-    }
-    .save-catalog-hint {
-      font-size: 12px; color: var(--text-secondary); font-weight: 500;
-    }
-    .btn-save-catalog {
-      display: flex; align-items: center; gap: 6px;
-      background: transparent;
-      border: 1.5px solid var(--accent);
-      color: var(--accent);
-      border-radius: var(--radius-pill);
-      padding: 7px 14px;
-      font-family: 'Google Sans', sans-serif;
-      font-size: 12px; font-weight: 600;
-      cursor: pointer; transition: background 0.15s;
-      white-space: nowrap;
-    }
-    .btn-save-catalog:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
-    .btn-save-catalog:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* ── Save Preview Sheet ── */
-    .save-preview-body { padding: 0 16px 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-    .save-field-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-    .save-field-value {
-      font-size: 13px; color: var(--text-primary); line-height: 1.5;
-      background: var(--chip-bg); border: 1.5px solid var(--chip-border);
-      border-radius: var(--radius-md); padding: 10px 12px;
-    }
-    .save-field-value.editable {
-      outline: none; cursor: text;
-    }
-    .save-field-value.editable:focus { border-color: var(--accent); }
-    .save-emoji-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .emoji-option {
-      font-size: 22px; padding: 6px 10px; border-radius: 10px;
-      border: 1.5px solid var(--chip-border); cursor: pointer;
-      background: var(--chip-bg); transition: border-color 0.15s, background 0.15s;
-    }
-    .emoji-option.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--chip-bg)); }
-    .save-cat-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .save-cat-option {
-      padding: 6px 12px; border-radius: var(--radius-pill);
-      border: 1.5px solid var(--chip-border); background: var(--chip-bg);
-      font-size: 12px; font-weight: 500; color: var(--text-secondary);
-      cursor: pointer; transition: border-color 0.15s, color 0.15s;
-    }
-    .save-cat-option.active { border-color: var(--accent); color: var(--accent); }
-    .save-cat-input {
-      width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-pill);
-      padding: 8px 14px; font-family: 'Google Sans', sans-serif; font-size: 13px;
-      color: var(--text-primary); background: var(--chip-bg); outline: none;
-      transition: border-color 0.15s; margin-top: 8px;
-    }
-    .save-cat-input:focus { border-color: var(--accent); }
-    .save-cat-input::placeholder { color: var(--text-muted); }
-    .save-actions { padding: 12px 16px 30px; flex-shrink: 0; border-top: 1px solid var(--chip-border); display: flex; gap: 10px; }
-    .save-confirm-btn {
-      flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
-      padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s;
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-    }
-    .save-confirm-btn:hover { background: var(--accent-hover); }
-    .save-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    [data-theme="dark"] .save-confirm-btn { color: #131314; }
-    .save-cancel-btn {
-      background: transparent; color: var(--text-secondary); border: 1px solid var(--chip-border);
-      border-radius: var(--radius-pill); padding: 13px 18px; font-family: 'Google Sans', sans-serif;
-      font-size: 13px; cursor: pointer; transition: background 0.15s;
-    }
-    .save-cancel-btn:hover { background: var(--chip-bg); }
-
-    /* AI thinking state in save sheet */
-    .save-thinking {
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
-      padding: 30px 20px; color: var(--text-secondary); font-size: 13px;
-    }
-
-    /* ── GitHub Settings Sheet ── */
-    .gh-settings-body { padding: 0 16px 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-    .gh-field-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-    .gh-field-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
-    .gh-input {
-      width: 100%; border: 1.5px solid var(--chip-border); border-radius: var(--radius-md);
-      padding: 10px 14px; font-family: 'Google Sans', sans-serif; font-size: 13px;
-      color: var(--text-primary); background: var(--chip-bg); outline: none; transition: border-color 0.15s;
-    }
-    .gh-input:focus { border-color: var(--accent); }
-    .gh-input::placeholder { color: var(--text-muted); }
-    .gh-status {
-      font-size: 12px; padding: 8px 12px; border-radius: var(--radius-sm);
-      display: none;
-    }
-    .gh-status.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; display: block; }
-    .gh-status.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; display: block; }
-    [data-theme="dark"] .gh-status.ok { background: #052e16; color: #6ee7b7; }
-    [data-theme="dark"] .gh-status.err { background: #2d1515; color: #fca5a5; }
-    .gh-save-btn {
-      width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-pill);
-      padding: 13px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
-    }
-    .gh-save-btn:hover { background: var(--accent-hover); }
-    [data-theme="dark"] .gh-save-btn { color: #131314; }
-    .gh-connected-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 600; color: #065f46;
-      background: #ecfdf5; border: 1px solid #6ee7b7;
-      padding: 3px 10px; border-radius: var(--radius-pill);
-    }
-    [data-theme="dark"] .gh-connected-badge { background: #052e16; color: #6ee7b7; }
-    .gh-dot { width: 7px; height: 7px; background: #10b981; border-radius: 50%; }
-
-    /* ── Toast ── */
-    .toast {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
-      background: #1f2937; color: #fff; padding: 10px 20px; border-radius: var(--radius-pill);
-      font-size: 13px; font-weight: 500; z-index: 300; opacity: 0;
-      transition: opacity 0.2s, transform 0.2s; pointer-events: none; white-space: nowrap;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.success { background: #065f46; }
-    .toast.error { background: #991b1b; }
+    .dot-anim span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 1.2s infinite ease-in-out; }
+    .dot-anim span:nth-child(2) { animation-delay: .2s; }
+    .dot-anim span:nth-child(3) { animation-delay: .4s; }
+    @keyframes pulse { 0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1} }
   </style>
 </head>
 <body>
@@ -432,88 +243,78 @@
 
   <!-- Topbar -->
   <div class="topbar">
-    <div class="topbar-logo">NB</div>
+    <div class="topbar-logo">FD</div>
     <div class="topbar-info">
       <div class="topbar-title">Female Dominance Studio</div>
       <div class="topbar-sub">Cinematic Scene Generator</div>
     </div>
     <div class="topbar-actions">
       <button class="icon-btn" onclick="openCatalog()" title="Prompt Catalog">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="4" y1="14" x2="13" y2="14"/>
-        </svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="4" y1="14" x2="13" y2="14"/></svg>
       </button>
       <button class="icon-btn" onclick="openThemeSheet()" title="Appearance">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon">
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
         </svg>
       </button>
-      <button class="icon-btn" onclick="openGithubSettings()" title="GitHub Settings">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-          <path d="M12 2v2m0 16v2M2 12h2m16 0h2"/>
-        </svg>
+      <button class="icon-btn" onclick="openSettings()" title="GitHub Settings" id="settings-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        <div class="gh-dot" id="gh-dot"></div>
       </button>
     </div>
   </div>
 
   <div class="main">
-
     <div class="greeting">
       <div class="greeting-hi">Cinematic Scene Preview 🎬</div>
       <div class="greeting-main">Choose a scene,<br>craft the vision.</div>
     </div>
 
-    <!-- Home category pills -->
-    <div class="cat-scroll" id="home-cats"></div>
-
-    <!-- AI Suggest -->
-    <div class="ai-suggest-row">
-      <button class="ai-suggest-btn" id="ai-suggest-btn" onclick="aiSuggest()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-        AI Suggest — get smart scene ideas
-      </button>
+    <!-- Image / Video tabs -->
+    <div class="tab-bar">
+      <div class="tab-btn active" id="tab-image" onclick="switchTab('image')">🖼️ Image Prompts</div>
+      <div class="tab-btn video-tab" id="tab-video" onclick="switchTab('video')">🎥 Video Prompts</div>
     </div>
 
+    <div class="cat-scroll" id="home-cats"></div>
+
     <div class="section-header">
-      <span class="section-title" id="home-section-title">Scene prompts</span>
+      <span class="section-title" id="section-title">Scene prompts</span>
       <span class="section-action" onclick="openCatalog()">Browse all →</span>
     </div>
     <div class="prompt-grid" id="home-prompt-grid">
-      <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">Loading prompts…</div>
+      <div class="empty-state">Loading prompts…</div>
     </div>
 
     <!-- Input card -->
     <div class="input-card">
-      <div class="prompt-wrap">
-        <textarea id="prompt" class="prompt-textarea"
-          placeholder="Full prompt will appear here when you pick from catalog…"
-          rows="3" oninput="autoResize(this); fromCatalog=false; checkCustomPrompt()"></textarea>
-      </div>
+      <textarea id="prompt" class="prompt-textarea"
+        placeholder="Pick a prompt from catalog above, or type your own here…"
+        rows="3" oninput="autoResize(this); onPromptInput()"></textarea>
+
       <div class="divider"></div>
-      <!-- Save to Catalog -->
-      <div id="save-catalog-row" class="save-catalog-row" style="display:none;">
-        <div class="save-catalog-hint">✏️ Custom prompt detected</div>
-        <button class="btn-save-catalog" id="btn-save-catalog" onclick="savePromptToCatalog()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+
+      <!-- Save to GitHub prompt row — shown when custom text typed -->
+      <div id="save-prompt-row" class="save-prompt-row" style="display:none;">
+        <div class="save-prompt-hint">💾 Save this prompt to GitHub?</div>
+        <button class="btn-save-prompt" onclick="openSavePromptSheet()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
           Save to Catalog
         </button>
       </div>
+
+      <div>
+        <div class="ref-label">Reference photos — actor / actress (optional, up to 8)</div>
         <div class="ref-row">
           <button class="ref-upload-btn" onclick="document.getElementById('ref-file-input').click()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="3"/>
-              <line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-            </svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
             Add photos
           </button>
           <div class="ref-thumbs" id="ref-thumbs"></div>
         </div>
         <input type="file" id="ref-file-input" accept="image/*" multiple onchange="handleRefFiles(this)" />
       </div>
+
       <div class="divider"></div>
       <div class="model-row">
         <span class="model-label">Model</span>
@@ -525,9 +326,7 @@
       </div>
       <div class="divider"></div>
       <div class="action-row">
-        <label class="compare-label">
-          <input type="checkbox" id="compare-cb" class="compare-cb" /> Compare
-        </label>
+        <label class="compare-label"><input type="checkbox" id="compare-cb" class="compare-cb"> Compare</label>
         <button class="btn-generate" id="btn-generate" onclick="generateImage()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Generate
@@ -543,15 +342,15 @@
 <!-- Overlay -->
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeAllSheets()"></div>
 
-<!-- Catalog sheet -->
+<!-- ── Catalog sheet ── -->
 <div class="bottom-sheet" id="catalog-sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
-    <span class="sheet-title">Prompt Catalog</span>
+    <span class="sheet-title" id="catalog-sheet-title">Prompt Catalog</span>
     <span class="sheet-close" onclick="closeCatalog()">✕</span>
   </div>
   <div class="catalog-search-wrap">
-    <input type="text" class="catalog-search" id="catalog-search" placeholder="Search scenes, moods, styles…" oninput="renderCatalogList()" />
+    <input type="text" class="catalog-search" id="catalog-search" placeholder="Search scenes, moods, styles…" oninput="renderCatalogList()"/>
   </div>
   <div class="catalog-cats" id="catalog-cats"></div>
   <div class="catalog-list" id="catalog-list"></div>
@@ -560,7 +359,80 @@
   </div>
 </div>
 
-<!-- Theme sheet -->
+<!-- ── Save Prompt sheet ── -->
+<div class="bottom-sheet" id="save-prompt-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <span class="sheet-title">Save to Catalog</span>
+    <span class="sheet-close" onclick="closeSavePromptSheet()">✕</span>
+  </div>
+  <div class="save-body">
+    <div>
+      <div class="field-label">Prompt type</div>
+      <div class="type-row">
+        <div class="type-opt active-img" id="type-image" onclick="selectSaveType('image')">🖼️ Image</div>
+        <div class="type-opt" id="type-video" onclick="selectSaveType('video')">🎥 Video</div>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Category</div>
+      <input class="field-input" id="save-category" placeholder="e.g. Villain Scenes, Throne & Palace…"/>
+    </div>
+    <div>
+      <div class="field-label">Emoji icon</div>
+      <input class="field-input" id="save-emoji" placeholder="e.g. 🎬" maxlength="4" style="font-size:20px;"/>
+    </div>
+    <div>
+      <div class="field-label">Short gist (shown in catalog)</div>
+      <input class="field-input" id="save-gist" placeholder="One crisp sentence describing the scene…"/>
+    </div>
+    <div>
+      <div class="field-label">Full prompt</div>
+      <textarea class="field-input field-textarea" id="save-text" readonly style="opacity:.7;"></textarea>
+    </div>
+    <div class="status-msg" id="save-prompt-status"></div>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn-cancel" onclick="closeSavePromptSheet()">Cancel</button>
+    <button class="btn-confirm" id="save-prompt-btn" onclick="confirmSavePrompt()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+      Save to GitHub
+    </button>
+  </div>
+</div>
+
+<!-- ── Settings sheet ── -->
+<div class="bottom-sheet" id="settings-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <span class="sheet-title">GitHub Settings</span>
+    <span class="sheet-close" onclick="closeSettings()">✕</span>
+  </div>
+  <div class="settings-body">
+    <div class="settings-card">
+      <div class="settings-card-title">🐙 GitHub Connection</div>
+      <div class="settings-card-desc">
+        Prompts are saved to <strong>prompts.txt</strong>, generated images to <strong>assets/images/</strong>.<br><br>
+        Use a <strong>Classic token</strong> (github.com → Settings → Developer settings → Tokens classic → tick <strong>repo</strong>).
+      </div>
+      <div>
+        <div class="settings-label">Repository</div>
+        <input class="settings-input" id="gh-repo" placeholder="username/repo-name"/>
+      </div>
+      <div>
+        <div class="settings-label">Personal Access Token</div>
+        <input class="settings-input" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxx"/>
+      </div>
+      <button class="settings-btn" onclick="saveGithubSettings()">Save & Test Connection</button>
+      <div class="status-msg" id="gh-status"></div>
+      <div id="gh-connected-wrap" style="display:none;">
+        <div class="connected-badge"><div class="connected-dot"></div>Connected</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Theme sheet ── -->
 <div class="bottom-sheet" id="theme-sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
@@ -568,99 +440,71 @@
     <span class="sheet-close" onclick="closeThemeSheet()">✕</span>
   </div>
   <div class="theme-options">
-    <div class="theme-option" id="opt-light" onclick="setTheme('light')">
-      <div class="theme-option-icon">☀️</div>
-      <div class="theme-option-info"><div class="theme-option-name">Light</div><div class="theme-option-desc">Always use light theme</div></div>
+    <div class="theme-opt" id="opt-light" onclick="setTheme('light')">
+      <div class="theme-opt-icon">☀️</div>
+      <div style="flex:1"><div class="theme-opt-name">Light</div><div class="theme-opt-desc">Always light</div></div>
       <div class="theme-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
     </div>
-    <div class="theme-option" id="opt-dark" onclick="setTheme('dark')">
-      <div class="theme-option-icon">🌙</div>
-      <div class="theme-option-info"><div class="theme-option-name">Dark</div><div class="theme-option-desc">Always use dark theme</div></div>
+    <div class="theme-opt" id="opt-dark" onclick="setTheme('dark')">
+      <div class="theme-opt-icon">🌙</div>
+      <div style="flex:1"><div class="theme-opt-name">Dark</div><div class="theme-opt-desc">Always dark</div></div>
       <div class="theme-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
     </div>
-    <div class="theme-option" id="opt-system" onclick="setTheme('system')">
-      <div class="theme-option-icon">⚙️</div>
-      <div class="theme-option-info"><div class="theme-option-name">System default</div><div class="theme-option-desc">Follow your device setting</div></div>
+    <div class="theme-opt" id="opt-system" onclick="setTheme('system')">
+      <div class="theme-opt-icon">⚙️</div>
+      <div style="flex:1"><div class="theme-opt-name">System</div><div class="theme-opt-desc">Follow device</div></div>
       <div class="theme-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
     </div>
   </div>
 </div>
 
-<!-- ── Save to Catalog Sheet ── -->
-<div class="bottom-sheet" id="save-sheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-head">
-    <span class="sheet-title">Save to Catalog</span>
-    <span class="sheet-close" onclick="closeSaveSheet()">✕</span>
-  </div>
-  <div class="save-preview-body" id="save-preview-body">
-    <div class="save-thinking">
-      <div class="spinner"></div>
-      AI is reading your prompt and generating gist, category & icon…
-    </div>
-  </div>
-  <div class="save-actions" id="save-actions" style="display:none;">
-    <button class="save-cancel-btn" onclick="closeSaveSheet()">Cancel</button>
-    <button class="save-confirm-btn" id="save-confirm-btn" onclick="confirmSaveToCatalog()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-      Confirm & Save
-    </button>
-  </div>
-</div>
-
-<!-- ── GitHub Settings Sheet ── -->
-<div class="bottom-sheet" id="gh-settings-sheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-head">
-    <span class="sheet-title">GitHub Connection</span>
-    <span class="sheet-close" onclick="closeGithubSettings()">✕</span>
-  </div>
-  <div class="gh-settings-body">
-    <div>
-      <div class="gh-field-label">Repository</div>
-      <div class="gh-field-desc">Your GitHub username and repo name where prompts.txt lives.</div>
-      <input class="gh-input" id="gh-repo" placeholder="username/repo-name" />
-    </div>
-    <div>
-      <div class="gh-field-label">Personal Access Token</div>
-      <div class="gh-field-desc">Create one at github.com → Settings → Developer settings → Personal access tokens → Fine-grained. Give it <strong>Contents: Read & Write</strong> permission on your repo only. It stays on your device only.</div>
-      <input class="gh-input" id="gh-token" type="password" placeholder="github_pat_xxxxxxxxxxxx" />
-    </div>
-    <div class="gh-status" id="gh-status"></div>
-    <button class="gh-save-btn" onclick="saveGithubSettings()">Save & Test Connection</button>
-    <div id="gh-connected-wrap" style="display:none;">
-      <div class="gh-connected-badge"><div class="gh-dot"></div> Connected</div>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
 <div class="toast" id="toast"></div>
+<button class="debug-btn" onclick="toggleDebug()">Show debug</button>
 <div class="debug-panel hidden" id="debug-panel">No response yet.</div>
 
 <script>
-// ── State ──
-let refImages = [];
-let debugLog = '';
-let allPrompts = [];
-let catalogSelectedIdx = -1;
-let catalogActiveCat = 'all';
-let homeActiveCat = 'all';
+// Load Puter async so it never blocks page render
+(function() {
+  const s = document.createElement('script');
+  s.src = 'https://js.puter.com/v2/';
+  s.async = true;
+  s.onload = () => console.log('[puter] loaded OK');
+  s.onerror = () => console.warn('[puter] failed to load — image generation unavailable');
+  document.head.appendChild(s);
+})();
+</script>
 
-// ── Load prompts.txt ──
+<script>
+'use strict';
+
+// ── State ──
+let allPrompts   = [];
+let refImages    = [];
+let debugLog     = '';
+let activeTab    = 'image';
+let homeActiveCat = 'all';
+let catalogActiveCat = 'all';
+let catalogSelectedIdx = -1;
+let fromCatalog  = false;
+let saveType     = 'image';
+
+// ── Storage keys ──
+const THEME_KEY    = 'nb-theme';
+const GH_REPO_KEY  = 'nb-gh-repo';
+const GH_TOKEN_KEY = 'nb-gh-token';
+
+// ════════════════════════════════════════
+//  LOAD PROMPTS (prompts.txt from same repo)
+// ════════════════════════════════════════
 async function loadPrompts() {
   try {
-    const res = await fetch('prompts.txt');
-    if (!res.ok) throw new Error('404');
-    const text = await res.text();
-    allPrompts = parsePrompts(text);
-  } catch (e) {
+    const res = await fetch('prompts.txt?' + Date.now());
+    if (!res.ok) throw new Error('not found');
+    allPrompts = parsePrompts(await res.text());
+  } catch {
     allPrompts = getDefaultPrompts();
   }
-  buildHomeCats();
-  renderHomePrompts();
-  buildCatalogCats();
-  renderCatalogList();
+  rebuildUI();
 }
 
 function parsePrompts(text) {
@@ -669,12 +513,12 @@ function parsePrompts(text) {
     if (!line || line.startsWith('#') || line.startsWith('[')) return acc;
     const parts = line.split('|').map(p => p.trim());
     if (parts.length >= 4) {
-      // 4-field format: category | emoji | gist | full prompt
-      acc.push({ category: parts[0], emoji: parts[1], gist: parts[2], text: parts.slice(3).join('|').trim() });
+      // category | emoji | gist | full prompt [| type:video]
+      const typeField = parts[4] || '';
+      const type = typeField.toLowerCase().includes('video') ? 'video' : 'image';
+      acc.push({ category: parts[0], emoji: parts[1], gist: parts[2], text: parts[3], type });
     } else if (parts.length === 3) {
-      // legacy 3-field: category | emoji | prompt (gist = first sentence)
-      const gist = parts[2].split('.')[0].trim();
-      acc.push({ category: parts[0], emoji: parts[1], gist, text: parts[2] });
+      acc.push({ category: parts[0], emoji: parts[1], gist: parts[2].split('.')[0].trim(), text: parts[2], type: 'image' });
     }
     return acc;
   }, []);
@@ -682,28 +526,60 @@ function parsePrompts(text) {
 
 function getDefaultPrompts() {
   return [
-    { category: 'Villain Scenes', emoji: '🎬', gist: 'Villainess stands over inverted man, stiletto near his face — opulent dark interior', text: 'Please utilize the attached images, ensuring that no facial, hairstyle, or attire alterations are introduced. A full-body cinematic shot depicting a commanding villainess. A young Indian male is inverted with head pointing downwards leaning against a pillar behind her. She raises one leg positioning her stiletto heel near his face. Dark wood accents, gold curtains, dimly lit bookshelves. Deep shadows, dramatic lighting, high-contrast composition.' },
-    { category: 'Villain Scenes', emoji: '👑', gist: 'Powerful woman seated at grand desk, young man confined beneath, stilettos in dominant proximity', text: 'Strictly base the entire artwork on the attached reference images. Full-body cinematic composition in a grand classical interior with ornate desk. Powerful woman seated commandingly. Young male figure positioned beneath the desk in a fixed structural framework, barefoot and shirtless. She extends one leg with stiletto heel in close proximity to him. Chiaroscuro lighting, rich textures, cinematic atmosphere.' },
+    { category: 'Villain Scenes', emoji: '🎬', type: 'image',
+      gist: 'Villainess stands over inverted man, stiletto near his face',
+      text: 'Please utilize the attached images, ensuring no facial, hairstyle, or attire alterations. Full-body cinematic shot depicting a commanding villainess. A young Indian male is inverted with head pointing downwards leaning against a pillar. She raises one leg positioning her stiletto heel near his face. Dark wood accents, gold curtains, dimly lit bookshelves. Deep shadows, dramatic lighting, high-contrast composition.' },
+    { category: 'Villain Scenes', emoji: '👑', type: 'image',
+      gist: 'Powerful woman at grand desk, young man confined beneath',
+      text: 'Strictly base on attached reference images. Full-body cinematic composition in a grand classical interior with ornate desk. Powerful woman seated commandingly. Young male beneath the desk in a fixed structural framework, barefoot and shirtless. She extends one leg with stiletto heel in close proximity. Chiaroscuro lighting, rich textures, cinematic atmosphere.' },
   ];
 }
 
-// ── Home screen ──
-function getCategories() {
-  return ['all', ...new Set(allPrompts.map(p => p.category))];
+function rebuildUI() {
+  buildHomeCats();
+  renderHomePrompts();
+  buildCatalogCats();
+  renderCatalogList();
+}
+
+// ════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════
+function switchTab(tab) {
+  activeTab = tab;
+  homeActiveCat = 'all';
+  document.getElementById('tab-image').classList.toggle('active', tab === 'image');
+  document.getElementById('tab-video').classList.toggle('active', tab === 'video');
+  document.getElementById('section-title').textContent = tab === 'video' ? 'Video prompts' : 'Scene prompts';
+  document.getElementById('catalog-sheet-title').textContent = tab === 'video' ? 'Video Catalog' : 'Prompt Catalog';
+  rebuildUI();
+}
+
+function tabPrompts() {
+  return allPrompts.filter(p => (p.type || 'image') === activeTab);
+}
+
+// ════════════════════════════════════════
+//  HOME SCREEN
+// ════════════════════════════════════════
+function getCategories(list) {
+  return ['all', ...new Set(list.map(p => p.category))];
 }
 
 function buildHomeCats() {
   const wrap = document.getElementById('home-cats');
   wrap.innerHTML = '';
-  getCategories().forEach(cat => {
+  getCategories(tabPrompts()).forEach(cat => {
     const pill = document.createElement('div');
-    pill.className = 'cat-pill' + (cat === homeActiveCat ? ' active' : '');
+    const isVideo = activeTab === 'video';
+    pill.className = 'cat-pill' + (cat === homeActiveCat ? (isVideo ? ' video-active' : ' active') : '');
     pill.textContent = cat === 'all' ? '✨ All' : cat;
     pill.onclick = () => {
       homeActiveCat = cat;
-      document.querySelectorAll('#home-cats .cat-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      document.getElementById('home-section-title').textContent = cat === 'all' ? 'Scene prompts' : cat;
+      document.querySelectorAll('#home-cats .cat-pill').forEach(p => p.className = 'cat-pill');
+      pill.className = 'cat-pill' + (isVideo ? ' video-active' : ' active');
+      document.getElementById('section-title').textContent =
+        cat === 'all' ? (activeTab === 'video' ? 'Video prompts' : 'Scene prompts') : cat;
       renderHomePrompts();
     };
     wrap.appendChild(pill);
@@ -712,10 +588,14 @@ function buildHomeCats() {
 
 function renderHomePrompts() {
   const grid = document.getElementById('home-prompt-grid');
-  let filtered = homeActiveCat === 'all' ? allPrompts : allPrompts.filter(p => p.category === homeActiveCat);
-  const shown = [...filtered].sort(() => 0.5 - Math.random()).slice(0, 5);
+  let pool = tabPrompts();
+  if (homeActiveCat !== 'all') pool = pool.filter(p => p.category === homeActiveCat);
+  const shown = [...pool].sort(() => .5 - Math.random()).slice(0, 5);
   grid.innerHTML = '';
-  if (!shown.length) { grid.innerHTML = '<div class="catalog-empty">No prompts found.</div>'; return; }
+  if (!shown.length) {
+    grid.innerHTML = `<div class="empty-state">No ${activeTab} prompts yet.<br>Save one using the input below!</div>`;
+    return;
+  }
   shown.forEach(p => {
     const card = document.createElement('div');
     card.className = 'prompt-card';
@@ -723,35 +603,45 @@ function renderHomePrompts() {
       <div class="prompt-card-top">
         <span class="prompt-card-emoji">${p.emoji}</span>
         <span class="prompt-card-text">${p.gist}</span>
-        <div class="prompt-card-use"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="prompt-card-use">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
       </div>
-      <span class="prompt-card-tag">${p.category}</span>`;
+      <div class="prompt-card-footer">
+        <span class="prompt-card-tag">${p.category}</span>
+        ${p.type === 'video' ? '<span class="video-badge">Video</span>' : ''}
+      </div>`;
     card.onclick = () => usePrompt(p.text, card);
     grid.appendChild(card);
   });
 }
 
 function usePrompt(text, cardEl) {
+  fromCatalog = true;
   document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
   if (cardEl) cardEl.classList.add('selected');
   const ta = document.getElementById('prompt');
   ta.value = text;
   autoResize(ta);
   ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('save-prompt-row').style.display = 'none';
 }
 
-// ── Catalog sheet ──
+// ════════════════════════════════════════
+//  CATALOG SHEET
+// ════════════════════════════════════════
 function buildCatalogCats() {
   const wrap = document.getElementById('catalog-cats');
   wrap.innerHTML = '';
-  getCategories().forEach(cat => {
+  // Catalog always shows only the current tab's prompts
+  getCategories(tabPrompts()).forEach(cat => {
     const pill = document.createElement('div');
-    pill.className = 'cat-pill' + (cat === catalogActiveCat ? ' active' : '');
+    pill.className = 'cat-pill' + (cat === catalogActiveCat ? (activeTab === 'video' ? ' video-active' : ' active') : '');
     pill.textContent = cat === 'all' ? '✨ All' : cat;
     pill.onclick = () => {
       catalogActiveCat = cat;
-      document.querySelectorAll('#catalog-cats .cat-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
+      document.querySelectorAll('#catalog-cats .cat-pill').forEach(p => p.className = 'cat-pill');
+      pill.className = 'cat-pill' + (activeTab === 'video' ? ' video-active' : ' active');
       renderCatalogList();
     };
     wrap.appendChild(pill);
@@ -759,25 +649,34 @@ function buildCatalogCats() {
 }
 
 function renderCatalogList() {
-  const list = document.getElementById('catalog-list');
-  const q = (document.getElementById('catalog-search')?.value || '').toLowerCase();
-  let filtered = catalogActiveCat === 'all' ? allPrompts : allPrompts.filter(p => p.category === catalogActiveCat);
-  if (q) filtered = filtered.filter(p => (p.gist||'').toLowerCase().includes(q) || p.text.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-  if (!filtered.length) { list.innerHTML = '<div class="catalog-empty">No prompts match your search.</div>'; return; }
+  const list  = document.getElementById('catalog-list');
+  const q     = (document.getElementById('catalog-search')?.value || '').toLowerCase();
+  // Only show prompts of the active tab type
+  let filtered = tabPrompts();
+  if (catalogActiveCat !== 'all') filtered = filtered.filter(p => p.category === catalogActiveCat);
+  if (q) filtered = filtered.filter(p =>
+    p.gist.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.text.toLowerCase().includes(q)
+  );
   list.innerHTML = '';
+  if (!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:13px;">No prompts found.</div>';
+    return;
+  }
   filtered.forEach(p => {
-    const globalIdx = allPrompts.indexOf(p);
+    const idx = allPrompts.indexOf(p);
     const item = document.createElement('div');
-    item.className = 'catalog-item' + (catalogSelectedIdx === globalIdx ? ' selected' : '');
+    item.className = 'catalog-item' + (catalogSelectedIdx === idx ? ' selected' : '');
     item.innerHTML = `
       <span class="catalog-item-emoji">${p.emoji}</span>
       <div class="catalog-item-body">
         <div class="catalog-item-text">${p.gist}</div>
-        <div class="catalog-item-cat">${p.category}</div>
+        <div class="catalog-item-cat">${p.category}${p.type === 'video' ? ' · <span style="color:var(--video)">Video</span>' : ''}</div>
       </div>
-      <div class="catalog-item-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+      <div class="catalog-item-check">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>`;
     item.onclick = () => {
-      catalogSelectedIdx = globalIdx;
+      catalogSelectedIdx = idx;
       document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
       item.classList.add('selected');
       document.getElementById('catalog-apply-btn').disabled = false;
@@ -794,120 +693,149 @@ function applySelectedPrompt() {
 
 function openCatalog() {
   catalogSelectedIdx = -1;
+  catalogActiveCat = 'all';
   document.getElementById('catalog-apply-btn').disabled = true;
   document.getElementById('catalog-search').value = '';
+  buildCatalogCats();
   renderCatalogList();
-  document.getElementById('catalog-sheet').classList.add('open');
-  document.getElementById('sheet-overlay').classList.add('open');
+  openSheet('catalog-sheet');
 }
-function closeCatalog() {
-  document.getElementById('catalog-sheet').classList.remove('open');
-  document.getElementById('sheet-overlay').classList.remove('open');
+function closeCatalog() { closeSheet('catalog-sheet'); }
+
+// ════════════════════════════════════════
+//  PROMPT INPUT — detect custom typing
+// ════════════════════════════════════════
+function onPromptInput() {
+  fromCatalog = false;
+  const val = document.getElementById('prompt').value.trim();
+  document.getElementById('save-prompt-row').style.display = val.length > 20 ? 'flex' : 'none';
 }
 
-// ── AI Suggest ──
-async function aiSuggest() {
-  const btn = document.getElementById('ai-suggest-btn');
+// ════════════════════════════════════════
+//  SAVE PROMPT TO GITHUB
+// ════════════════════════════════════════
+function openSavePromptSheet() {
+  const text = document.getElementById('prompt').value.trim();
+  if (!text) return;
+  // Pre-fill type based on active tab
+  saveType = activeTab;
+  selectSaveType(activeTab);
+  document.getElementById('save-text').value = text;
+  document.getElementById('save-category').value = '';
+  document.getElementById('save-emoji').value = '🎬';
+  document.getElementById('save-gist').value = '';
+  document.getElementById('save-prompt-status').className = 'status-msg';
+  document.getElementById('save-prompt-btn').disabled = false;
+  document.getElementById('save-prompt-btn').innerHTML =
+    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Save to GitHub`;
+  openSheet('save-prompt-sheet');
+}
+function closeSavePromptSheet() { closeSheet('save-prompt-sheet'); }
+
+function selectSaveType(type) {
+  saveType = type;
+  document.getElementById('type-image').className = 'type-opt' + (type === 'image' ? ' active-img' : '');
+  document.getElementById('type-video').className  = 'type-opt' + (type === 'video' ? ' active-vid' : '');
+}
+
+async function confirmSavePrompt() {
+  const repo  = localStorage.getItem(GH_REPO_KEY);
+  const token = localStorage.getItem(GH_TOKEN_KEY);
+  if (!repo || !token) {
+    showStatus('save-prompt-status', 'err', '❌ GitHub not connected. Tap ⚙️ to set up first.');
+    return;
+  }
+  const category = document.getElementById('save-category').value.trim();
+  const emoji    = document.getElementById('save-emoji').value.trim() || '🎬';
+  const gist     = document.getElementById('save-gist').value.trim();
+  const text     = document.getElementById('save-text').value.trim();
+
+  if (!category) { showStatus('save-prompt-status', 'err', '❌ Please enter a category.'); return; }
+  if (!gist)     { showStatus('save-prompt-status', 'err', '❌ Please enter a short gist.'); return; }
+
+  const btn = document.getElementById('save-prompt-btn');
   btn.disabled = true;
-  btn.innerHTML = `<div class="dot-anim"><span></span><span></span><span></span></div> Generating ideas…`;
+  btn.innerHTML = `<div class="spinner spinner-sm"></div> Saving…`;
 
-  const cats = [...new Set(allPrompts.map(p => p.category))].join(', ');
-  const currentPrompt = document.getElementById('prompt').value.trim();
-  const refCount = refImages.length;
-
-  const msg = `You are a creative director for a cinematic dominance-themed film production.
-Generate 4 unique scene prompts, all themed around a powerful commanding woman in cinematic dominance scenes over a young male figure.
-${currentPrompt ? `Build on this concept: "${currentPrompt}".` : 'Vary the settings — palace, library, outdoor, corporate, fantasy.'}
-${refCount > 0 ? `The user has uploaded ${refCount} actor/actress reference photos.` : ''}
-Rules:
-- Each prompt is richly detailed, cinematic, and visually specific (lighting, attire, positioning, setting)
-- Return ONLY a JSON array, no other text: [{"emoji":"...","category":"...","gist":"one sentence max summarising the scene","text":"full detailed cinematic prompt"}]`;
+  const typeTag  = saveType === 'video' ? ' | type:video' : '';
+  const newLine  = `${category} | ${emoji} | ${gist} | ${text}${typeTag}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: msg }]
-      })
-    });
-    const data = await res.json();
-    const raw = (data.content || []).map(b => b.text || '').join('').replace(/```json|```/g, '').trim();
-    const suggestions = JSON.parse(raw);
-
-    const grid = document.getElementById('home-prompt-grid');
-    grid.innerHTML = '';
-
-    const lbl = document.createElement('div');
-    lbl.className = 'ai-label';
-    lbl.textContent = '✨ AI-generated suggestions';
-    grid.appendChild(lbl);
-
-    suggestions.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'prompt-card';
-      card.innerHTML = `
-        <div class="prompt-card-top">
-          <span class="prompt-card-emoji">${p.emoji || '🎬'}</span>
-          <span class="prompt-card-text">${p.gist || p.text}</span>
-          <div class="prompt-card-use"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-        </div>
-        <span class="prompt-card-tag">${p.category || 'AI Suggested'}</span>`;
-      card.onclick = () => usePrompt(p.text, card);
-      grid.appendChild(card);
-    });
-
-    const refresh = document.createElement('div');
-    refresh.className = 'refresh-btn';
-    refresh.textContent = '↻ Generate more ideas';
-    refresh.onclick = aiSuggest;
-    grid.appendChild(refresh);
-
-  } catch (err) {
-    renderHomePrompts();
+    await githubAppendLine('prompts.txt', newLine, `Add ${saveType} prompt: ${gist.slice(0,50)}`);
+    // Immediately show in UI without reload
+    allPrompts.push({ category, emoji, gist, text, type: saveType });
+    rebuildUI();
+    closeSavePromptSheet();
+    showToast('✅ Saved to prompts.txt!', 'ok');
+    fromCatalog = true;
+    document.getElementById('save-prompt-row').style.display = 'none';
+  } catch (e) {
+    showStatus('save-prompt-status', 'err', `❌ ${e.message}`);
+    btn.disabled = false;
+    btn.innerHTML = `Save to GitHub`;
   }
-
-  btn.disabled = false;
-  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> AI Suggest — get smart scene ideas`;
 }
 
-// ── Generate ──
+// ════════════════════════════════════════
+//  GENERATE IMAGE (Puter / Nano Banana)
+// ════════════════════════════════════════
 async function generateImage() {
   const prompt = document.getElementById('prompt').value.trim();
-  if (!prompt) { alert('Please enter or select a prompt.'); return; }
+  if (!prompt) { alert('Please enter or select a prompt first.'); return; }
 
-  const model = document.getElementById('model-select').value;
+  const model   = document.getElementById('model-select').value;
   const compare = document.getElementById('compare-cb').checked;
-  const btn = document.getElementById('btn-generate');
-  const output = document.getElementById('output-section');
+  const btn     = document.getElementById('btn-generate');
+  const output  = document.getElementById('output-section');
 
   btn.disabled = true;
-  btn.innerHTML = `<div class="spinner" style="width:14px;height:14px;border-width:2px;margin:0"></div> Generating…`;
+  btn.innerHTML = `<div class="dot-anim"><span></span><span></span><span></span></div> Generating…`;
   output.innerHTML = '';
 
-  const models = compare ? ['gemini-3.1-flash-image-preview', 'gemini-3-pro-image-preview'] : [model];
+  const models = compare
+    ? ['gemini-3.1-flash-image-preview', 'gemini-3-pro-image-preview']
+    : [model];
 
   for (const m of models) {
     const card = document.createElement('div');
     card.className = 'output-card';
-    card.innerHTML = `<div class="output-card-header">${m}</div><div class="spinner-wrap"><div class="spinner"></div><div class="spinner-label">Rendering scene…</div></div>`;
+
+    const repo  = localStorage.getItem(GH_REPO_KEY);
+    const token = localStorage.getItem(GH_TOKEN_KEY);
+    const canSave = !!(repo && token);
+
+    card.innerHTML = `
+      <div class="output-card-header">
+        <span>${m.replace('gemini-','').replace('-image-preview','').replace('-preview-image-generation','')}</span>
+        ${canSave ? `<button class="save-img-btn" id="save-img-${m}" onclick="saveImageToGitHub('${m}')" disabled>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+          Save to GitHub
+        </button>` : ''}
+      </div>
+      <div class="spinner-wrap" id="spinner-${m}"><div class="spinner"></div><div class="spinner-label">Nano Banana rendering…</div></div>`;
     output.appendChild(card);
 
     try {
-      const opts = refImages.length > 0 ? { model: m, images: refImages.map(r => r.dataUrl) } : { model: m };
-      const result = await puter.ai.txt2img(prompt, opts);
-      debugLog += `\n[${m}] Success\n` + JSON.stringify(result, null, 2);
-      document.getElementById('debug-panel').textContent = debugLog;
-      result.style.width = '100%'; result.style.display = 'block';
-      card.querySelector('.spinner-wrap').replaceWith(result);
+      const opts = refImages.length > 0
+        ? { model: m, images: refImages.map(r => r.dataUrl) }
+        : { model: m };
+      if (typeof puter === 'undefined' || !puter.ai) {
+        throw new Error('Puter AI not loaded yet. Wait a moment and try again, or check your internet connection.');
+      }
+      const imgEl = await puter.ai.txt2img(prompt, opts);
+      debugLog += `\n[${m}] OK`; updateDebug();
+      imgEl.style.width = '100%'; imgEl.style.display = 'block';
+      imgEl.id = `gen-img-${m}`;
+      card.querySelector(`#spinner-${m}`).replaceWith(imgEl);
+      // Enable save button now that image exists
+      const saveBtn = document.getElementById(`save-img-${m}`);
+      if (saveBtn) saveBtn.disabled = false;
     } catch (err) {
-      debugLog += `\n[${m}] Error: ${err.message}`;
-      document.getElementById('debug-panel').textContent = debugLog;
+      debugLog += `\n[${m}] Error: ${err.message}`; updateDebug();
       const e = document.createElement('div');
-      e.className = 'error-msg'; e.textContent = 'Error: ' + err.message;
-      card.querySelector('.spinner-wrap').replaceWith(e);
+      e.className = 'error-msg';
+      e.textContent = 'Error: ' + err.message;
+      card.querySelector(`#spinner-${m}`).replaceWith(e);
     }
   }
 
@@ -916,26 +844,167 @@ async function generateImage() {
   output.scrollIntoView({ behavior: 'smooth' });
 }
 
-// ── Helpers ──
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 200) + 'px'; }
+// ════════════════════════════════════════
+//  SAVE GENERATED IMAGE TO GITHUB
+// ════════════════════════════════════════
+async function saveImageToGitHub(modelKey) {
+  const imgEl = document.getElementById(`gen-img-${modelKey}`);
+  if (!imgEl) { showToast('Image not found', 'err'); return; }
+
+  const btn = document.getElementById(`save-img-${modelKey}`);
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner spinner-sm"></div>`;
+
+  try {
+    // Convert img element src to base64
+    const canvas = document.createElement('canvas');
+    canvas.width  = imgEl.naturalWidth  || imgEl.width;
+    canvas.height = imgEl.naturalHeight || imgEl.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(imgEl, 0, 0);
+    const dataUrl  = canvas.toDataURL('image/png');
+    const base64   = dataUrl.split(',')[1];
+
+    // Filename: timestamp + model short name
+    const short    = modelKey.includes('flash') ? 'flash' : modelKey.includes('pro') ? 'pro' : 'nb2';
+    const ts       = new Date().toISOString().replace(/[:T]/g,'-').slice(0,16);
+    const filename = `assets/images/${ts}-${short}.png`;
+
+    await githubWriteFile(filename, base64, `🖼️ Generated image ${ts} (${short})`);
+    showToast('✅ Image saved to GitHub!', 'ok');
+    btn.innerHTML = '✅ Saved';
+  } catch (e) {
+    showToast(`❌ ${e.message}`, 'err');
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg> Save to GitHub`;
+  }
+}
+
+// ════════════════════════════════════════
+//  GITHUB API HELPERS
+// ════════════════════════════════════════
+function ghHeaders() {
+  return {
+    'Authorization': `token ${localStorage.getItem(GH_TOKEN_KEY)}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+}
+
+// Append a line to an existing text file (read → append → write)
+async function githubAppendLine(filepath, newLine, commitMsg) {
+  const repo = localStorage.getItem(GH_REPO_KEY);
+  const url  = `https://api.github.com/repos/${repo}/contents/${filepath}`;
+
+  const getRes = await fetch(url, { headers: ghHeaders() });
+  if (!getRes.ok) throw new Error(`Cannot read ${filepath} (${getRes.status})`);
+  const fileData = await getRes.json();
+
+  const current = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,''))));
+  const updated = current.trimEnd() + '\n' + newLine + '\n';
+
+  const putRes = await fetch(url, {
+    method: 'PUT',
+    headers: ghHeaders(),
+    body: JSON.stringify({
+      message: commitMsg,
+      content: btoa(unescape(encodeURIComponent(updated))),
+      sha: fileData.sha
+    })
+  });
+  if (!putRes.ok) {
+    const err = await putRes.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub write failed (${putRes.status})`);
+  }
+}
+
+// Write a new binary/text file (creates or overwrites)
+async function githubWriteFile(filepath, base64Content, commitMsg) {
+  const repo = localStorage.getItem(GH_REPO_KEY);
+  const url  = `https://api.github.com/repos/${repo}/contents/${filepath}`;
+
+  // Check if file exists to get SHA (needed for update)
+  let sha = null;
+  try {
+    const check = await fetch(url, { headers: ghHeaders() });
+    if (check.ok) { const d = await check.json(); sha = d.sha; }
+  } catch {}
+
+  const body = { message: commitMsg, content: base64Content };
+  if (sha) body.sha = sha;
+
+  const putRes = await fetch(url, {
+    method: 'PUT',
+    headers: ghHeaders(),
+    body: JSON.stringify(body)
+  });
+  if (!putRes.ok) {
+    const err = await putRes.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub write failed (${putRes.status})`);
+  }
+}
+
+// ════════════════════════════════════════
+//  SETTINGS SHEET
+// ════════════════════════════════════════
+function openSettings() {
+  document.getElementById('gh-repo').value  = localStorage.getItem(GH_REPO_KEY) || '';
+  document.getElementById('gh-token').value = localStorage.getItem(GH_TOKEN_KEY) || '';
+  document.getElementById('gh-status').className = 'status-msg';
+  const connected = localStorage.getItem(GH_REPO_KEY) && localStorage.getItem(GH_TOKEN_KEY);
+  document.getElementById('gh-connected-wrap').style.display = connected ? 'block' : 'none';
+  openSheet('settings-sheet');
+}
+function closeSettings() { closeSheet('settings-sheet'); }
+
+async function saveGithubSettings() {
+  const repo  = document.getElementById('gh-repo').value.trim();
+  const token = document.getElementById('gh-token').value.trim();
+  if (!repo || !token) { showStatus('gh-status', 'err', 'Fill in both fields.'); return; }
+
+  showStatus('gh-status', '', 'Testing connection…');
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/prompts.txt`, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error(`GitHub returned ${res.status} — check repo name and token`);
+
+    localStorage.setItem(GH_REPO_KEY, repo);
+    localStorage.setItem(GH_TOKEN_KEY, token);
+    document.getElementById('gh-dot').classList.add('on');
+    document.getElementById('gh-connected-wrap').style.display = 'block';
+    showStatus('gh-status', 'ok', '✅ Connected! prompts.txt found.');
+    showToast('GitHub connected!', 'ok');
+  } catch (e) {
+    showStatus('gh-status', 'err', `❌ ${e.message}`);
+  }
+}
+
+// ════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+}
 
 function handleRefFiles(input) {
   Array.from(input.files).slice(0, 8 - refImages.length).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => { refImages.push({ file, dataUrl: e.target.result }); renderThumbs(); };
-    reader.readAsDataURL(file);
+    const r = new FileReader();
+    r.onload = e => { refImages.push({ file, dataUrl: e.target.result }); renderThumbs(); };
+    r.readAsDataURL(file);
   });
   input.value = '';
 }
-
 function renderThumbs() {
   const wrap = document.getElementById('ref-thumbs');
   wrap.innerHTML = '';
   refImages.forEach((img, i) => {
-    const div = document.createElement('div');
-    div.className = 'ref-thumb-wrap';
-    div.innerHTML = `<img src="${img.dataUrl}" class="ref-thumb"/><div class="ref-thumb-remove" onclick="removeRef(${i})">✕</div>`;
-    wrap.appendChild(div);
+    const d = document.createElement('div');
+    d.className = 'ref-thumb-wrap';
+    d.innerHTML = `<img src="${img.dataUrl}" class="ref-thumb"><div class="ref-thumb-remove" onclick="removeRef(${i})">✕</div>`;
+    wrap.appendChild(d);
   });
 }
 function removeRef(i) { refImages.splice(i, 1); renderThumbs(); }
@@ -946,300 +1015,85 @@ function clearAll() {
   refImages = []; renderThumbs();
   document.getElementById('output-section').innerHTML = '';
   document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('save-catalog-row').style.display = 'none';
+  document.getElementById('save-prompt-row').style.display = 'none';
   fromCatalog = false;
-  debugLog = ''; document.getElementById('debug-panel').textContent = 'No response yet.';
+  debugLog = ''; updateDebug();
 }
 
-// ── GitHub Settings ──
-const GH_REPO_KEY = 'nb-gh-repo';
-const GH_TOKEN_KEY = 'nb-gh-token';
-
-function openGithubSettings() {
-  const repo = localStorage.getItem(GH_REPO_KEY) || '';
-  const token = localStorage.getItem(GH_TOKEN_KEY) || '';
-  document.getElementById('gh-repo').value = repo;
-  document.getElementById('gh-token').value = token;
-  document.getElementById('gh-status').className = 'gh-status';
-  document.getElementById('gh-status').textContent = '';
-  document.getElementById('gh-connected-wrap').style.display = repo && token ? 'block' : 'none';
-  document.getElementById('gh-settings-sheet').classList.add('open');
-  document.getElementById('sheet-overlay').classList.add('open');
-}
-function closeGithubSettings() {
-  document.getElementById('gh-settings-sheet').classList.remove('open');
-  document.getElementById('sheet-overlay').classList.remove('open');
-}
-
-async function saveGithubSettings() {
-  const repo = document.getElementById('gh-repo').value.trim();
-  const token = document.getElementById('gh-token').value.trim();
-  const status = document.getElementById('gh-status');
-  if (!repo || !token) { status.className = 'gh-status err'; status.textContent = 'Please fill in both fields.'; return; }
-
-  status.className = 'gh-status'; status.textContent = 'Testing connection…';
-
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo}/contents/prompts.txt`, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
-    localStorage.setItem(GH_REPO_KEY, repo);
-    localStorage.setItem(GH_TOKEN_KEY, token);
-    status.className = 'gh-status ok'; status.textContent = '✅ Connected! prompts.txt found.';
-    document.getElementById('gh-connected-wrap').style.display = 'block';
-    // Update topbar settings icon to show connected
-    showToast('GitHub connected!', 'success');
-  } catch (e) {
-    status.className = 'gh-status err'; status.textContent = `❌ ${e.message}. Check repo name and token permissions.`;
-  }
-}
-
-// ── Save to Catalog ──
-let pendingSave = null; // { category, emoji, gist, text }
-
-function checkCustomPrompt() {
-  const val = document.getElementById('prompt').value.trim();
-  const row = document.getElementById('save-catalog-row');
-  // Show save button only if prompt is typed and not from catalog selection
-  if (val.length > 30 && !fromCatalog) {
-    row.style.display = 'flex';
-  } else {
-    row.style.display = 'none';
-  }
-}
-
-let fromCatalog = false;
-
-// Override usePrompt to track catalog selection
-const _origUsePrompt = usePrompt;
-function usePrompt(text, cardEl) {
-  fromCatalog = true;
-  document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
-  if (cardEl) cardEl.classList.add('selected');
-  const ta = document.getElementById('prompt');
-  ta.value = text;
-  autoResize(ta);
-  ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  document.getElementById('save-catalog-row').style.display = 'none';
-}
-
-async function savePromptToCatalog() {
-  const promptText = document.getElementById('prompt').value.trim();
-  if (!promptText) return;
-
-  const repo = localStorage.getItem(GH_REPO_KEY);
-  const token = localStorage.getItem(GH_TOKEN_KEY);
-  if (!repo || !token) {
-    showToast('Set up GitHub connection first (⚙️ icon)', 'error');
-    openGithubSettings();
-    return;
-  }
-
-  // Open sheet in thinking state
-  document.getElementById('save-sheet').classList.add('open');
-  document.getElementById('sheet-overlay').classList.add('open');
-  document.getElementById('save-preview-body').innerHTML = `
-    <div class="save-thinking">
-      <div class="spinner"></div>
-      AI is analysing your prompt — generating gist, category & icon…
-    </div>`;
-  document.getElementById('save-actions').style.display = 'none';
-
-  // Ask Claude to analyse the prompt
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        messages: [{
-          role: 'user',
-          content: `Analyse this cinematic image generation prompt and return ONLY a JSON object, no other text:
-{
-  "gist": "one crisp sentence (max 15 words) describing the scene context",
-  "category": "best matching category from: Villain Scenes, Throne & Palace, Library & Study, Courtroom & Power, Outdoor & Nature, Modern & Corporate, Fantasy & Supernatural — or suggest a new one if none fit",
-  "emoji": "single most fitting emoji for the scene",
-  "suggestedEmojis": ["5 alternative emojis as array"]
-}
-
-Prompt to analyse:
-"""${promptText.slice(0, 800)}"""`
-        }]
-      })
-    });
-    const data = await res.json();
-    const raw = (data.content || []).map(b => b.text || '').join('').replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(raw);
-
-    const existingCats = [...new Set(allPrompts.map(p => p.category))];
-    pendingSave = { category: parsed.category, emoji: parsed.emoji, gist: parsed.gist, text: promptText };
-
-    // Render editable preview
-    const allEmojis = [parsed.emoji, ...(parsed.suggestedEmojis || [])].slice(0, 6);
-    const catOptions = [...new Set([...existingCats, parsed.category])];
-
-    document.getElementById('save-preview-body').innerHTML = `
-      <div>
-        <div class="save-field-label">🏷️ Gist (shown in catalog)</div>
-        <div class="save-field-value editable" id="edit-gist" contenteditable="true">${parsed.gist}</div>
-      </div>
-      <div>
-        <div class="save-field-label">📁 Category</div>
-        <div class="save-cat-row" id="cat-options">
-          ${catOptions.map(c => `<div class="save-cat-option${c === parsed.category ? ' active' : ''}" onclick="selectSaveCat(this,'${c.replace(/'/g,"\\'")}'">${c}</div>`).join('')}
-        </div>
-        <input class="save-cat-input" id="custom-cat-input" placeholder="Or type a new category…" oninput="typedNewCat(this)" />
-      </div>
-      <div>
-        <div class="save-field-label">✨ Icon</div>
-        <div class="save-emoji-row" id="emoji-options">
-          ${allEmojis.map(e => `<div class="emoji-option${e === parsed.emoji ? ' active' : ''}" onclick="selectSaveEmoji(this,'${e}')">${e}</div>`).join('')}
-        </div>
-      </div>
-      <div>
-        <div class="save-field-label">📝 Full Prompt (read-only)</div>
-        <div class="save-field-value" style="font-size:11px;max-height:100px;overflow-y:auto;opacity:0.7;">${promptText.slice(0, 300)}${promptText.length > 300 ? '…' : ''}</div>
-      </div>`;
-
-    document.getElementById('save-actions').style.display = 'flex';
-
-  } catch (e) {
-    document.getElementById('save-preview-body').innerHTML = `<div class="save-thinking" style="color:#dc2626;">❌ AI analysis failed: ${e.message}</div>`;
-  }
-}
-
-function selectSaveCat(el, cat) {
-  document.querySelectorAll('.save-cat-option').forEach(o => o.classList.remove('active'));
-  el.classList.add('active');
-  if (pendingSave) pendingSave.category = cat;
-  document.getElementById('custom-cat-input').value = '';
-}
-function typedNewCat(el) {
-  if (el.value.trim()) {
-    document.querySelectorAll('.save-cat-option').forEach(o => o.classList.remove('active'));
-    if (pendingSave) pendingSave.category = el.value.trim();
-  }
-}
-function selectSaveEmoji(el, emoji) {
-  document.querySelectorAll('.emoji-option').forEach(o => o.classList.remove('active'));
-  el.classList.add('active');
-  if (pendingSave) pendingSave.emoji = emoji;
-}
-
-async function confirmSaveToCatalog() {
-  if (!pendingSave) return;
-
-  // Read editable fields
-  const gistEl = document.getElementById('edit-gist');
-  if (gistEl) pendingSave.gist = gistEl.textContent.trim();
-  const customCat = document.getElementById('custom-cat-input')?.value.trim();
-  if (customCat) pendingSave.category = customCat;
-
-  const btn = document.getElementById('save-confirm-btn');
-  btn.disabled = true;
-  btn.innerHTML = `<div class="spinner" style="width:14px;height:14px;border-width:2px;margin:0"></div> Saving…`;
-
-  const repo = localStorage.getItem(GH_REPO_KEY);
-  const token = localStorage.getItem(GH_TOKEN_KEY);
-
-  try {
-    // 1. Get current file SHA + content
-    const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/prompts.txt`, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!getRes.ok) throw new Error('Could not read prompts.txt from GitHub');
-    const fileData = await getRes.json();
-    const currentContent = atob(fileData.content.replace(/\n/g, ''));
-    const sha = fileData.sha;
-
-    // 2. Build new line in correct format
-    const newLine = `${pendingSave.category} | ${pendingSave.emoji} | ${pendingSave.gist} | ${pendingSave.text}`;
-    const newContent = currentContent.trimEnd() + '\n' + newLine + '\n';
-
-    // 3. Push updated file
-    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/prompts.txt`, {
-      method: 'PUT',
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: `Add prompt: ${pendingSave.gist.slice(0, 60)}`,
-        content: btoa(unescape(encodeURIComponent(newContent))),
-        sha
-      })
-    });
-    if (!putRes.ok) {
-      const errData = await putRes.json();
-      throw new Error(errData.message || 'GitHub write failed');
-    }
-
-    // 4. Instantly add to local allPrompts so it shows without reload
-    allPrompts.push({ ...pendingSave });
-    buildHomeCats();
-    buildCatalogCats();
-    renderHomePrompts();
-    renderCatalogList();
-
-    closeSaveSheet();
-    showToast('✅ Saved to catalog!', 'success');
-    fromCatalog = true;
-    document.getElementById('save-catalog-row').style.display = 'none';
-    pendingSave = null;
-
-  } catch (e) {
-    showToast(`❌ ${e.message}`, 'error');
-    btn.disabled = false;
-    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Confirm & Save`;
-  }
-}
-
-function closeSaveSheet() {
-  document.getElementById('save-sheet').classList.remove('open');
-  document.getElementById('sheet-overlay').classList.remove('open');
-}
-
-// ── Toast ──
 function showToast(msg, type = '') {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = `toast ${type} show`;
-  setTimeout(() => { t.className = `toast ${type}`; }, 3000);
+  setTimeout(() => { t.className = `toast ${type}`; }, 3200);
+}
+
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'status-msg' + (type ? ' ' + type : '');
+  el.textContent = msg;
+}
+
+function updateDebug() {
+  document.getElementById('debug-panel').textContent = debugLog || 'No response yet.';
+}
+
+// ── Sheets ──
+function openSheet(id) {
+  document.getElementById(id).classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+}
+function closeSheet(id) {
+  document.getElementById(id).classList.remove('open');
+  // Only close overlay if no other sheet is open
+  const anyOpen = document.querySelectorAll('.bottom-sheet.open').length > 0;
+  if (!anyOpen) document.getElementById('sheet-overlay').classList.remove('open');
+}
+function closeAllSheets() {
+  document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('open'));
+  document.getElementById('sheet-overlay').classList.remove('open');
 }
 
 // ── Theme ──
-const THEME_KEY = 'nb-theme';
 const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
-
 function applyTheme(pref) {
-  const isDark = pref === 'dark' || (pref === 'system' && sysDark.matches);
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  const dark = pref === 'dark' || (pref === 'system' && sysDark.matches);
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   const icon = document.getElementById('theme-icon');
-  if (icon) icon.innerHTML = isDark
+  if (icon) icon.innerHTML = dark
     ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
 }
 function setTheme(pref) {
   localStorage.setItem(THEME_KEY, pref);
   applyTheme(pref);
-  ['light','dark','system'].forEach(t => document.getElementById('opt-'+t).classList.toggle('active', t === pref));
-  setTimeout(closeThemeSheet, 200);
+  ['light','dark','system'].forEach(t =>
+    document.getElementById('opt-'+t).classList.toggle('active', t === pref)
+  );
+  setTimeout(closeAllSheets, 200);
 }
-function openThemeSheet() { document.getElementById('theme-sheet').classList.add('open'); document.getElementById('sheet-overlay').classList.add('open'); }
-function closeThemeSheet() { document.getElementById('theme-sheet').classList.remove('open'); document.getElementById('sheet-overlay').classList.remove('open'); }
-function closeAllSheets() { closeCatalog(); closeThemeSheet(); closeSaveSheet(); closeGithubSettings(); }
-sysDark.addEventListener('change', () => { if ((localStorage.getItem(THEME_KEY)||'system')==='system') applyTheme('system'); });
+function openThemeSheet()  { openSheet('theme-sheet'); }
+function closeThemeSheet() { closeSheet('theme-sheet'); }
+sysDark.addEventListener('change', () => {
+  if ((localStorage.getItem(THEME_KEY) || 'system') === 'system') applyTheme('system');
+});
 
 function toggleDebug() {
   const p = document.getElementById('debug-panel');
   p.classList.toggle('hidden');
-  document.querySelector('.debug-btn').textContent = p.classList.contains('hidden') ? 'Show debug' : 'Hide debug';
+  document.querySelector('.debug-btn').textContent =
+    p.classList.contains('hidden') ? 'Show debug' : 'Hide debug';
 }
 
 // ── Init ──
 (function init() {
   const saved = localStorage.getItem(THEME_KEY) || 'system';
   applyTheme(saved);
-  ['light','dark','system'].forEach(t => document.getElementById('opt-'+t).classList.toggle('active', t === saved));
+  ['light','dark','system'].forEach(t =>
+    document.getElementById('opt-'+t).classList.toggle('active', t === saved)
+  );
+  if (localStorage.getItem(GH_REPO_KEY) && localStorage.getItem(GH_TOKEN_KEY)) {
+    document.getElementById('gh-dot').classList.add('on');
+  }
   loadPrompts();
 })();
 </script>
