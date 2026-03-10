@@ -334,18 +334,14 @@
       <div class="model-row">
         <span class="model-label">Model</span>
         <select id="model-select" class="model-select">
-          <optgroup label="🍌 Nano Banana (Gemini) — face reference works">
-            <option value="gemini-2.5-flash-preview-image-generation">NB Flash (cheapest ⚡)</option>
-            <option value="gemini-3.1-flash-image-preview" selected>NB 3.1 Flash</option>
-            <option value="gemini-3-pro-image-preview">NB 3 Pro (best quality)</option>
+          <optgroup label="⚡ Gemini Proxy — free, face reference works">
+            <option value="gemini-2.0-flash-preview-image-generation">Gemini Flash Preview (recommended ⚡)</option>
+            <option value="gemini-2.0-flash-exp">Gemini Flash Exp (alternate free)</option>
+            <option value="gemini-2.5-flash-preview-image-generation">Gemini 2.5 Flash (higher quality)</option>
           </optgroup>
-          <optgroup label="🎨 FLUX — text-to-image only (no ref photo)">
-            <option value="black-forest-labs/flux.1-schnell">FLUX Schnell (ultra cheap ⚡)</option>
-            <option value="black-forest-labs/flux.1-dev">FLUX Dev</option>
-            <option value="black-forest-labs/flux.1-pro">FLUX Pro</option>
-          </optgroup>
-          <optgroup label="🖼️ GPT Image — text-to-image only">
-            <option value="gpt-image-1">GPT Image-1</option>
+          <optgroup label="🍌 Puter fallback — only if proxy not set">
+            <option value="gemini-3.1-flash-image-preview">Puter NB 3.1 Flash</option>
+            <option value="gemini-3-pro-image-preview">Puter NB 3 Pro</option>
           </optgroup>
         </select>
       </div>
@@ -954,7 +950,8 @@ async function generateImage() {
 
       if (useGemini) {
         // ── GEMINI PROXY PATH ──
-        const geminiModel = localStorage.getItem(VERCEL_MODEL_KEY) || m;
+        // Use the model from main dropdown directly (it's already a Gemini model name)
+        const geminiModel = m;
         debugLog += `\n[${m}] → Gemini proxy, ref=${!!refBase64}`; updateDebug();
 
         const body = { prompt, model: geminiModel };
