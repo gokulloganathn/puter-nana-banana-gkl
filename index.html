@@ -334,14 +334,14 @@
       <div class="model-row">
         <span class="model-label">Model</span>
         <select id="model-select" class="model-select">
-          <optgroup label="⚡ Gemini Proxy — free, face reference works">
-            <option value="gemini-2.0-flash-preview-image-generation">Gemini Flash Preview (recommended ⚡)</option>
-            <option value="gemini-2.0-flash-exp">Gemini Flash Exp (alternate free)</option>
-            <option value="gemini-2.5-flash-preview-image-generation">Gemini 2.5 Flash (higher quality)</option>
+          <optgroup label="⚡ Gemini Proxy — via your Vercel backend">
+            <option value="gemini-2.5-flash-image">Gemini 2.5 Flash Image (free ⚡ recommended)</option>
+            <option value="gemini-3.1-flash-image-preview">Gemini 3.1 Flash Image Preview (faster)</option>
+            <option value="gemini-3-pro-image-preview">Gemini 3 Pro Image Preview (best quality)</option>
           </optgroup>
-          <optgroup label="🍌 Puter fallback — only if proxy not set">
+          <optgroup label="🍌 Puter fallback — only if proxy not configured">
+            <option value="gemini-2.5-flash-image">Puter NB Flash</option>
             <option value="gemini-3.1-flash-image-preview">Puter NB 3.1 Flash</option>
-            <option value="gemini-3-pro-image-preview">Puter NB 3 Pro</option>
           </optgroup>
         </select>
       </div>
@@ -455,9 +455,9 @@
       <div>
         <div class="settings-label">Model</div>
         <select class="settings-input" id="gemini-model-setting" style="appearance:none;cursor:pointer;">
-          <option value="gemini-2.0-flash-preview-image-generation">gemini-2.0-flash-preview (free ⚡ recommended)</option>
-          <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp (free alternate)</option>
-          <option value="gemini-2.5-flash-preview-image-generation">gemini-2.5-flash-preview (higher quality)</option>
+          <option value="gemini-2.5-flash-image">gemini-2.5-flash-image (free ⚡ recommended)</option>
+          <option value="gemini-3.1-flash-image-preview">gemini-3.1-flash-image-preview (faster)</option>
+          <option value="gemini-3-pro-image-preview">gemini-3-pro-image-preview (best quality)</option>
         </select>
       </div>
       <button type="button" class="settings-btn" onclick="saveVercelSettings()">Save & Test</button>
@@ -918,7 +918,7 @@ async function generateImage() {
 
   const models = compare
     ? (useGemini
-        ? ['gemini-2.0-flash-preview-image-generation', 'gemini-2.0-flash-exp']
+        ? ['gemini-2.5-flash-image', 'gemini-3.1-flash-image-preview']
         : ['gemini-3.1-flash-image-preview', 'gemini-3-pro-image-preview'])
     : [model];
 
@@ -1141,7 +1141,7 @@ function openSettings() {
   document.getElementById('gh-connected-wrap').style.display = ghConnected ? 'block' : 'none';
 
   document.getElementById('vercel-url').value = localStorage.getItem(VERCEL_URL_KEY) || '';
-  document.getElementById('gemini-model-setting').value = localStorage.getItem(VERCEL_MODEL_KEY) || 'gemini-2.0-flash-preview-image-generation';
+  document.getElementById('gemini-model-setting').value = localStorage.getItem(VERCEL_MODEL_KEY) || 'gemini-2.5-flash-image';
   document.getElementById('vercel-status').className = 'status-msg';
   const vercelConnected = !!localStorage.getItem(VERCEL_URL_KEY);
   document.getElementById('vercel-connected-wrap').style.display = vercelConnected ? 'block' : 'none';
