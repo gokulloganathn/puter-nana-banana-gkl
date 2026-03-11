@@ -2,6 +2,7 @@
 
 This repository is a static single-page app that uses the Puter JavaScript SDK (`puter.ai.txt2img`) to generate images. It works as a plain static site (no build step required), so GitHub Pages is a good deployment target.
 
+
 ## Quick summary
 
 - The app expects an OAuth redirect target at `auth_callback.html` — this file exists in the project and will write a `putter_auth` localStorage marker and postMessage the opener when the provider redirects back.
