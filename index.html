@@ -400,6 +400,9 @@
       placeholder="Paste your full DALL-E prompt here…&#10;e.g. A hyper-realistic 8K cinematic scene of a female officer with…"
       rows="6"
       oninput="onOfficerPromptInput(this)"
+      onpaste="setTimeout(()=>onOfficerPromptInput(this),10)"
+      onchange="onOfficerPromptInput(this)"
+      onkeyup="onOfficerPromptInput(this)"
       style="width:100%;background:var(--surface);border:1.5px solid var(--chip-border);border-radius:var(--radius-md);padding:13px 14px;font-family:'Google Sans',sans-serif;font-size:13px;color:var(--text-primary);resize:none;outline:none;line-height:1.6;transition:border-color .15s;display:block;"></textarea>
 
     <!-- Char count + clear -->
@@ -588,34 +591,65 @@
 <div class="debug-panel hidden" id="debug-panel">No response yet.</div>
 
 <script>
-// Puter loader: tries local puter.js first (self-hosted), then official CDN
+// Puter loader with visible status debug
 (function loadPuter(urls, idx) {
+  // Update status pill with current attempt
+  function setStatus(msg, color, dot) {
+    document.addEventListener('DOMContentLoaded', function() {}, false);
+    var pill = document.getElementById('puter-status');
+    if (pill) {
+      pill.style.background = color === 'red' ? '#fee2e2' : color === 'green' ? '#d1fae5' : '#fef3c7';
+      pill.style.color = color === 'red' ? '#991b1b' : color === 'green' ? '#065f46' : '#92400e';
+      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:' + dot + ';display:inline-block;margin-right:3px;"></span>' + msg;
+    }
+  }
+
   if (idx >= urls.length) {
-    // All failed — show setup banner
     document.addEventListener('DOMContentLoaded', function() {
-      const pill = document.getElementById('puter-status');
-      if (pill) {
-        pill.style.background='#fee2e2'; pill.style.color='#991b1b';
-        pill.innerHTML='<span style="width:5px;height:5px;border-radius:50%;background:#ef4444;display:inline-block;"></span>Offline';
-      }
-      const banner = document.createElement('div');
-      banner.style.cssText='position:fixed;top:0;left:0;right:0;background:#1e3a5f;color:#fff;padding:14px 18px;font-family:sans-serif;font-size:13px;z-index:9999;line-height:1.7;';
-      banner.innerHTML='<strong>⚠️ puter.js not found.</strong> Image generation needs puter.js.<br>' +
-        '1. Open <a href="https://js.puter.com/v2/" target="_blank" style="color:#7dd3fc">js.puter.com/v2/</a> in browser → Save As <code style="background:#0f2744;padding:2px 5px;border-radius:4px;">puter.js</code><br>' +
-        '2. Put <code style="background:#0f2744;padding:2px 5px;border-radius:4px;">puter.js</code> in the same folder as <code style="background:#0f2744;padding:2px 5px;border-radius:4px;">index.html</code> and commit to GitHub.<br>' +
-        '<button onclick="this.parentElement.remove()" style="margin-top:8px;background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:5px 14px;cursor:pointer;font-size:12px;">Dismiss</button>';
+      setStatus('Failed - all CDNs blocked', 'red', '#ef4444');
+      var banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#7f1d1d;color:#fff;padding:14px 18px;font-family:sans-serif;font-size:13px;z-index:9999;line-height:1.8;';
+      banner.innerHTML = '<strong>\u26a0\ufe0f Puter failed to load from all CDNs.</strong><br>' +
+        'Your network may be blocking CDNs. Try:<br>' +
+        '1. Turn on VPN and reload<br>' +
+        '2. Or open <a href="https://js.puter.com/v2/" target="_blank" style="color:#fca5a5;">js.puter.com/v2/</a> \u2192 Save As <strong>puter.js</strong> \u2192 commit to repo root<br>' +
+        '<button onclick="this.parentElement.remove()" style="margin-top:8px;background:#ef4444;color:#fff;border:none;border-radius:6px;padding:5px 14px;cursor:pointer;">Dismiss</button>';
       document.body.prepend(banner);
     });
     return;
   }
-  const s = document.createElement('script');
+
+  var label = urls[idx].includes('jsdelivr') ? 'jsDelivr CDN' :
+              urls[idx].includes('unpkg') ? 'unpkg CDN' :
+              urls[idx].includes('puter.com') ? 'puter.com CDN' : 'local puter.js';
+
+  console.log('[puter] trying:', urls[idx]);
+
+  var s = document.createElement('script');
   s.src = urls[idx];
-  s.onload = () => console.log('[puter] loaded from', urls[idx]);
-  s.onerror = () => { console.warn('[puter] failed:', urls[idx]); loadPuter(urls, idx + 1); };
+  s.onload = function() {
+    console.log('[puter] loaded from', urls[idx]);
+    // Now wait for puter object to initialize
+    var tries = 0;
+    var iv = setInterval(function() {
+      tries++;
+      if (typeof puter !== 'undefined') {
+        clearInterval(iv);
+        console.log('[puter] object ready after', tries, 'ticks');
+      }
+      if (tries > 100) clearInterval(iv);
+    }, 100);
+  };
+  s.onerror = function() {
+    console.warn('[puter] failed:', urls[idx]);
+    loadPuter(urls, idx + 1);
+  };
   document.head.appendChild(s);
 })([
-  'puter.js',               // ← local self-hosted copy (put in same folder as index.html)
-  'https://js.puter.com/v2/' // ← official CDN fallback
+  'puter.js',
+  'https://cdn.jsdelivr.net/npm/@heyputer/puter.js@2/dist/puter.dev.js',
+  'https://unpkg.com/@heyputer/puter.js@2/dist/puter.dev.js',
+  'https://js.puter.com/v2/'
 ], 0);
 </script>
 
@@ -703,6 +737,8 @@ function switchTab(tab) {
   if (tab === 'officer') {
     mainContent.style.display = 'none';
     officerSection.classList.add('active');
+    // Refresh char count in case user pasted before switching tab
+    setTimeout(() => onOfficerPromptInput(document.getElementById('officer-prompt-input')), 50);
   } else {
     mainContent.style.display = 'block';
     officerSection.classList.remove('active');
@@ -1356,20 +1392,59 @@ function toggleDebug() {
   }
   loadPrompts();
 
-  // Puter status indicator — polls until ready or 20s timeout
+  // Puter status indicator — polls until ready or 30s timeout, logs to debug
   const pill = document.getElementById('puter-status');
   let attempts = 0;
+  debugLog = '[init] Waiting for Puter...'; updateDebug();
   const iv = setInterval(() => {
     attempts++;
-    if (typeof puter !== 'undefined' && puter.ai) {
+    const puterExists = typeof puter !== 'undefined';
+    const puterAiReady = puterExists && !!puter.ai;
+    if (puterAiReady) {
       clearInterval(iv);
       pill.style.background = '#d1fae5'; pill.style.color = '#065f46';
       pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block;"></span>Ready';
-      updateAccountLabel();
-    } else if (attempts > 200) {
+      debugLog += '\n[init] Puter loaded OK after ' + (attempts * 100) + 'ms';
+      debugLog += '\n[init] puter.ai keys = ' + JSON.stringify(Object.keys(puter.ai || {}));
+      updateDebug();
+      // Proactively trigger Puter auth so login popup shows immediately on page load
+      try {
+        if (puter.auth && typeof puter.auth.isSignedIn === 'function') {
+          const signedIn = puter.auth.isSignedIn();
+          debugLog += '\n[auth] isSignedIn=' + signedIn;
+          updateDebug();
+          if (!signedIn) {
+            // Touch puter.ai.chat with a tiny call to trigger login popup
+            puter.auth.signIn().then(() => {
+              debugLog += '\n[auth] signed in OK'; updateDebug();
+              updateAccountLabel();
+            }).catch(e => {
+              debugLog += '\n[auth] signIn error: ' + e.message; updateDebug();
+            });
+          } else {
+            updateAccountLabel();
+          }
+        } else {
+          updateAccountLabel();
+        }
+      } catch(authErr) {
+        debugLog += '\n[auth] error: ' + authErr.message; updateDebug();
+        updateAccountLabel();
+      }
+    } else if (attempts % 20 === 0) {
+      // Log progress every 2s
+      debugLog = '[init] Waiting for Puter... ' + (attempts * 100) + 'ms' +
+        '\n  puter exists: ' + puterExists +
+        '\n  puter.ai ready: ' + puterAiReady;
+      updateDebug();
+      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>Loading ' + Math.round(attempts/10) + 's…';
+    }
+    if (attempts > 300) {
       clearInterval(iv);
       pill.style.background = '#fee2e2'; pill.style.color = '#991b1b';
-      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#ef4444;display:inline-block;"></span>Offline — reload';
+      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#ef4444;display:inline-block;"></span>Failed';
+      debugLog += '\n[init] FAILED after 30s. puter=' + (typeof puter) + ' puter.ai=' + (typeof puter !== "undefined" ? typeof puter.ai : "n/a");
+      updateDebug();
     }
   }, 100);
 
@@ -1437,11 +1512,15 @@ function deleteOfficerPrompt(idx) {
 
 // Handle textarea input — update char count, show save row
 function onOfficerPromptInput(el) {
+  if (!el) el = document.getElementById('officer-prompt-input');
+  if (!el) return;
   el.style.height = 'auto';
-  el.style.height = el.scrollHeight + 'px';
+  el.style.height = Math.max(el.scrollHeight, 120) + 'px';
   const len = el.value.trim().length;
-  document.getElementById('officer-charcount').textContent = len + ' characters';
-  document.getElementById('officer-save-row').style.display = len > 20 ? 'block' : 'none';
+  const counter = document.getElementById('officer-charcount');
+  if (counter) counter.textContent = len + ' characters';
+  const saveRow = document.getElementById('officer-save-row');
+  if (saveRow) saveRow.style.display = len > 20 ? 'block' : 'none';
 }
 
 // Save current prompt to catalog
@@ -1482,6 +1561,7 @@ async function officerGenerate() {
   btn.disabled = true;
   btn.innerHTML = `<div class="dot-anim"><span></span><span></span><span></span></div> Generating…`;
 
+  // Show card + spinner IMMEDIATELY before any async work
   const mId = 'dalle-' + Date.now();
   const canSave = !!(localStorage.getItem(GH_REPO_KEY) && localStorage.getItem(GH_TOKEN_KEY));
 
@@ -1497,13 +1577,17 @@ async function officerGenerate() {
     </div>
     <div class="spinner-wrap" id="spinner-${mId}">
       <div class="spinner"></div>
-      <div class="spinner-label">${model} rendering…</div>
+      <div class="spinner-label" id="spinner-label-${mId}">Connecting to Puter…</div>
     </div>`;
-  output.prepend(card); // newest on top
+  output.prepend(card);
   card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   try {
+    // Wait for puter — update spinner label while waiting
+    const labelEl = document.getElementById('spinner-label-' + mId);
+    if (labelEl) labelEl.textContent = 'Waiting for Puter login…';
     await waitForPuter();
+    if (labelEl) labelEl.textContent = model + ' generating image…';
 
     // Call puter.ai.txt2img with DALL-E model
     const imgEl = await puter.ai.txt2img(prompt, { model });
