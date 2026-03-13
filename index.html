@@ -48,9 +48,34 @@
     .greeting-hi { font-size: 13px; color: var(--text-secondary); margin-bottom: 3px; }
     .greeting-main { font-family: 'Google Sans Display', sans-serif; font-size: 24px; font-weight: 400; color: var(--text-primary); line-height: 1.25; }
 
-    /* Tabs */
-    .tab-bar { display: flex; gap: 6px; padding: 10px 0 14px; }
-    .tab-btn { flex: 1; padding: 9px 6px; border-radius: var(--radius-pill); border: 1.5px solid var(--chip-border); background: var(--surface); font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all .15s; }
+    /* Officer tab */
+    .tab-btn.officer-tab.active { background: #7c1d1d; border-color: #7c1d1d; color: #fecaca; }
+    #officer-section { display: none; padding-bottom: 120px; }
+    #officer-section.active { display: block; }
+    .officer-header { padding: 18px 2px 14px; }
+    .officer-header-title { font-family: 'Google Sans Display', sans-serif; font-size: 22px; font-weight: 400; color: var(--text-primary); line-height: 1.25; }
+    .officer-header-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .officer-section-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .7px; padding: 10px 0 8px; }
+    .officer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 14px; }
+    .officer-card { background: var(--surface); border: 1.5px solid var(--chip-border); border-radius: var(--radius-md); padding: 14px 12px; cursor: pointer; text-align: center; transition: all .15s; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .officer-card:hover { border-color: #ef4444; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .officer-card.selected { border-color: #ef4444; background: color-mix(in srgb, #ef4444 8%, var(--surface)); }
+    .officer-card-emoji { font-size: 28px; line-height: 1; }
+    .officer-card-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .officer-card-desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+    .officer-generate-bar { position: sticky; bottom: 0; background: var(--bg); padding: 12px 0 24px; border-top: 1px solid var(--chip-border); margin: 0 -14px; padding-left: 14px; padding-right: 14px; }
+    .officer-model-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .btn-officer-generate { width: 100%; background: #dc2626; color: #fff; border: none; border-radius: var(--radius-pill); padding: 13px 18px; font-family: 'Google Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background .15s; letter-spacing: .3px; }
+    .btn-officer-generate:hover { background: #b91c1c; }
+    .btn-officer-generate:disabled { opacity: .6; cursor: not-allowed; }
+    .officer-output { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+    .officer-prompt-preview { background: var(--chip-bg); border: 1px solid var(--chip-border); border-radius: var(--radius-md); padding: 10px 13px; font-size: 11px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px; font-style: italic; display: none; }
+    .officer-prompt-preview.show { display: block; }
+
+    /* Tabs - 3 tabs now */
+    .tab-bar { display: flex; gap: 6px; padding: 10px 0 14px; overflow-x: auto; scrollbar-width: none; }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn { flex-shrink: 0; padding: 9px 12px; border-radius: var(--radius-pill); border: 1.5px solid var(--chip-border); background: var(--surface); font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all .15s; white-space: nowrap; }
     .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
     [data-theme="dark"] .tab-btn.active { color: #131314; }
     .tab-btn.video-tab.active { background: var(--video); border-color: var(--video); }
@@ -270,15 +295,17 @@
   </div>
 
   <div class="main">
+    <!-- Image / Video / Officer tabs — always visible -->
+    <div class="tab-bar">
+      <div class="tab-btn active" id="tab-image" onclick="switchTab('image')">🖼️ Image</div>
+      <div class="tab-btn video-tab" id="tab-video" onclick="switchTab('video')">🎥 Video</div>
+      <div class="tab-btn officer-tab" id="tab-officer" onclick="switchTab('officer')">👮‍♀️ Officer</div>
+    </div>
+
+    <div id="main-content">
     <div class="greeting">
       <div class="greeting-hi">Cinematic Scene Preview 🎬</div>
       <div class="greeting-main">Choose a scene,<br>craft the vision.</div>
-    </div>
-
-    <!-- Image / Video tabs -->
-    <div class="tab-bar">
-      <div class="tab-btn active" id="tab-image" onclick="switchTab('image')">🖼️ Image Prompts</div>
-      <div class="tab-btn video-tab" id="tab-video" onclick="switchTab('video')">🎥 Video Prompts</div>
     </div>
 
     <div class="cat-scroll" id="home-cats"></div>
@@ -334,11 +361,18 @@
       <div class="model-row">
         <span class="model-label">Model</span>
         <select id="model-select" class="model-select">
-          <option value="gemini-3.1-flash-image-preview">Nano Banana (gemini-3.1-flash)</option>
-          <option value="gemini-3-pro-image-preview">Nano Banana Pro (gemini-3-pro)</option>
-          <option value="gemini-2.5-flash-preview-image-generation">Nano Banana 2 (gemini-2.5-flash)</option>
+          <option value="gemini-2.5-flash-image">🍌 NB Flash — gemini-2.5-flash (fastest)</option>
+          <option value="gemini-3.1-flash-image-preview">🍌 NB 3.1 Flash — gemini-3.1-flash</option>
+          <option value="gemini-3-pro-image-preview">🍌 NB Pro — gemini-3-pro (best quality)</option>
         </select>
       </div>
+
+      <!-- Account switcher row -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0;">
+        <div style="font-size:11px;color:var(--text-muted);" id="puter-account-label">Puter account: checking…</div>
+        <button type="button" onclick="switchPuterAccount()" style="background:transparent;border:1px solid var(--chip-border);color:var(--text-secondary);border-radius:var(--radius-pill);padding:5px 12px;font-family:'Google Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;">↩ Switch Account</button>
+      </div>
+
       <div class="divider"></div>
       <div class="action-row">
         <label class="compare-label"><input type="checkbox" id="compare-cb" class="compare-cb"> Compare</label>
@@ -351,6 +385,71 @@
     </div>
 
     <div class="output-section" id="output-section"></div>
+    </div><!-- end #main-content -->
+
+  <!-- ══ OFFICER / DALL-E TAB ══ -->
+  <div id="officer-section">
+    <div class="officer-header">
+      <div class="officer-header-title">👮‍♀️ Officer Studio<br><span style="color:#dc2626;">DALL-E Generation.</span></div>
+      <div class="officer-header-sub">Paste your full prompt → generate with DALL-E → save to catalog</div>
+    </div>
+
+    <!-- Prompt paste area -->
+    <div class="officer-section-label">📋 Your Prompt</div>
+    <textarea id="officer-prompt-input"
+      placeholder="Paste your full DALL-E prompt here…&#10;e.g. A hyper-realistic 8K cinematic scene of a female officer with…"
+      rows="6"
+      oninput="onOfficerPromptInput(this)"
+      onpaste="setTimeout(()=>onOfficerPromptInput(this),10)"
+      onchange="onOfficerPromptInput(this)"
+      onkeyup="onOfficerPromptInput(this)"
+      style="width:100%;background:var(--surface);border:1.5px solid var(--chip-border);border-radius:var(--radius-md);padding:13px 14px;font-family:'Google Sans',sans-serif;font-size:13px;color:var(--text-primary);resize:none;outline:none;line-height:1.6;transition:border-color .15s;display:block;"></textarea>
+
+    <!-- Char count + clear -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 2px 10px;">
+      <span id="officer-charcount" style="font-size:11px;color:var(--text-muted);">0 characters</span>
+      <button type="button" onclick="document.getElementById('officer-prompt-input').value='';onOfficerPromptInput(document.getElementById('officer-prompt-input'));" style="background:transparent;border:none;font-size:11px;color:var(--text-muted);cursor:pointer;padding:2px 4px;">✕ Clear</button>
+    </div>
+
+    <!-- Save to catalog row — shown after typing -->
+    <div id="officer-save-row" style="display:none;background:var(--chip-bg);border:1px solid var(--chip-border);border-radius:var(--radius-md);padding:12px 13px;margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:8px;">💾 Save to Catalog?</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">Give this prompt a short gist — it'll appear in the Officer catalog next time</div>
+      <input type="text" id="officer-gist-input" maxlength="60"
+        placeholder="e.g. Hair grab through bars, close-up"
+        style="width:100%;background:var(--surface);border:1px solid var(--chip-border);border-radius:var(--radius-sm);padding:9px 12px;font-family:'Google Sans',sans-serif;font-size:12px;color:var(--text-primary);outline:none;margin-bottom:8px;"/>
+      <button type="button" onclick="saveOfficerPromptToCatalog()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-pill);padding:7px 16px;font-family:'Google Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">Save to Catalog</button>
+      <div class="status-msg" id="officer-save-status"></div>
+    </div>
+
+    <!-- Catalog section — prompts saved by user -->
+    <div id="officer-catalog-wrap" style="display:none;">
+      <div class="officer-section-label" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>📁 Saved Prompts</span>
+        <span style="font-size:10px;color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0;">tap to load</span>
+      </div>
+      <div id="officer-catalog-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
+    </div>
+
+    <!-- Output images -->
+    <div class="officer-output" id="officer-output"></div>
+
+    <!-- Sticky bottom bar -->
+    <div class="officer-generate-bar">
+      <div class="officer-model-row">
+        <span class="model-label">Model</span>
+        <select id="officer-model-select" class="model-select" style="flex:1;">
+          <option value="dall-e-3">DALL-E 3 (best quality)</option>
+          <option value="gpt-image-1.5">GPT Image 1.5 (newest)</option>
+          <option value="gpt-image-1">GPT Image 1</option>
+          <option value="dall-e-2">DALL-E 2 (fastest)</option>
+        </select>
+      </div>
+      <button type="button" class="btn-officer-generate" id="btn-officer-generate" onclick="officerGenerate()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Generate with DALL-E
+      </button>
+    </div>
   </div>
 </div>
 
@@ -420,15 +519,28 @@
 <div class="bottom-sheet" id="settings-sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
-    <span class="sheet-title">GitHub Settings</span>
+    <span class="sheet-title">Settings</span>
     <span class="sheet-close" onclick="closeSettings()">✕</span>
   </div>
   <div class="settings-body">
+
+    <!-- Puter account switcher -->
     <div class="settings-card">
-      <div class="settings-card-title">🐙 GitHub Connection</div>
+      <div class="settings-card-title">🍌 Puter Account</div>
       <div class="settings-card-desc">
-        Prompts are saved to <strong>prompts.txt</strong>, generated images to <strong>assets/images/</strong>.<br><br>
-        Use a <strong>Classic token</strong> (github.com → Settings → Developer settings → Tokens classic → tick <strong>repo</strong>).
+        Image generation runs through your Puter account.<br>
+        When your free credits run out, sign out and sign in with a new account (temp mail works fine).
+      </div>
+      <div id="puter-account-card-label" style="font-size:12px;color:var(--text-secondary);padding:4px 0;">Checking account…</div>
+      <button type="button" class="settings-btn" style="background:#ef4444;" onclick="switchPuterAccount()">↩ Sign Out — Switch Account</button>
+    </div>
+
+    <!-- GitHub card -->
+    <div class="settings-card">
+      <div class="settings-card-title">🐙 GitHub — Save Prompts & Images</div>
+      <div class="settings-card-desc">
+        Prompts saved to <strong>prompts.txt</strong>, images to <strong>assets/images/</strong>.<br>
+        Classic token → repo scope.
       </div>
       <div>
         <div class="settings-label">Repository</div>
@@ -441,9 +553,10 @@
       <button type="button" class="settings-btn" onclick="saveGithubSettings()">Save & Test Connection</button>
       <div class="status-msg" id="gh-status"></div>
       <div id="gh-connected-wrap" style="display:none;">
-        <div class="connected-badge"><div class="connected-dot"></div>Connected</div>
+        <div class="connected-badge"><div class="connected-dot"></div>GitHub Connected ✓</div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -478,34 +591,65 @@
 <div class="debug-panel hidden" id="debug-panel">No response yet.</div>
 
 <script>
-// Puter loader: tries local puter.js first (self-hosted), then official CDN
+// Puter loader with visible status debug
 (function loadPuter(urls, idx) {
+  // Update status pill with current attempt
+  function setStatus(msg, color, dot) {
+    document.addEventListener('DOMContentLoaded', function() {}, false);
+    var pill = document.getElementById('puter-status');
+    if (pill) {
+      pill.style.background = color === 'red' ? '#fee2e2' : color === 'green' ? '#d1fae5' : '#fef3c7';
+      pill.style.color = color === 'red' ? '#991b1b' : color === 'green' ? '#065f46' : '#92400e';
+      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:' + dot + ';display:inline-block;margin-right:3px;"></span>' + msg;
+    }
+  }
+
   if (idx >= urls.length) {
-    // All failed — show setup banner
     document.addEventListener('DOMContentLoaded', function() {
-      const pill = document.getElementById('puter-status');
-      if (pill) {
-        pill.style.background='#fee2e2'; pill.style.color='#991b1b';
-        pill.innerHTML='<span style="width:5px;height:5px;border-radius:50%;background:#ef4444;display:inline-block;"></span>Offline';
-      }
-      const banner = document.createElement('div');
-      banner.style.cssText='position:fixed;top:0;left:0;right:0;background:#1e3a5f;color:#fff;padding:14px 18px;font-family:sans-serif;font-size:13px;z-index:9999;line-height:1.7;';
-      banner.innerHTML='<strong>⚠️ puter.js not found.</strong> Image generation needs puter.js.<br>' +
-        '1. Open <a href="https://js.puter.com/v2/" target="_blank" style="color:#7dd3fc">js.puter.com/v2/</a> in browser → Save As <code style="background:#0f2744;padding:2px 5px;border-radius:4px;">puter.js</code><br>' +
-        '2. Put <code style="background:#0f2744;padding:2px 5px;border-radius:4px;">puter.js</code> in the same folder as <code style="background:#0f2744;padding:2px 5px;border-radius:4px;">index.html</code> and commit to GitHub.<br>' +
-        '<button onclick="this.parentElement.remove()" style="margin-top:8px;background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:5px 14px;cursor:pointer;font-size:12px;">Dismiss</button>';
+      setStatus('Failed - all CDNs blocked', 'red', '#ef4444');
+      var banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#7f1d1d;color:#fff;padding:14px 18px;font-family:sans-serif;font-size:13px;z-index:9999;line-height:1.8;';
+      banner.innerHTML = '<strong>\u26a0\ufe0f Puter failed to load from all CDNs.</strong><br>' +
+        'Your network may be blocking CDNs. Try:<br>' +
+        '1. Turn on VPN and reload<br>' +
+        '2. Or open <a href="https://js.puter.com/v2/" target="_blank" style="color:#fca5a5;">js.puter.com/v2/</a> \u2192 Save As <strong>puter.js</strong> \u2192 commit to repo root<br>' +
+        '<button onclick="this.parentElement.remove()" style="margin-top:8px;background:#ef4444;color:#fff;border:none;border-radius:6px;padding:5px 14px;cursor:pointer;">Dismiss</button>';
       document.body.prepend(banner);
     });
     return;
   }
-  const s = document.createElement('script');
+
+  var label = urls[idx].includes('jsdelivr') ? 'jsDelivr CDN' :
+              urls[idx].includes('unpkg') ? 'unpkg CDN' :
+              urls[idx].includes('puter.com') ? 'puter.com CDN' : 'local puter.js';
+
+  console.log('[puter] trying:', urls[idx]);
+
+  var s = document.createElement('script');
   s.src = urls[idx];
-  s.onload = () => console.log('[puter] loaded from', urls[idx]);
-  s.onerror = () => { console.warn('[puter] failed:', urls[idx]); loadPuter(urls, idx + 1); };
+  s.onload = function() {
+    console.log('[puter] loaded from', urls[idx]);
+    // Now wait for puter object to initialize
+    var tries = 0;
+    var iv = setInterval(function() {
+      tries++;
+      if (typeof puter !== 'undefined') {
+        clearInterval(iv);
+        console.log('[puter] object ready after', tries, 'ticks');
+      }
+      if (tries > 100) clearInterval(iv);
+    }, 100);
+  };
+  s.onerror = function() {
+    console.warn('[puter] failed:', urls[idx]);
+    loadPuter(urls, idx + 1);
+  };
   document.head.appendChild(s);
 })([
-  'puter.js',               // ← local self-hosted copy (put in same folder as index.html)
-  'https://js.puter.com/v2/' // ← official CDN fallback
+  'puter.js',
+  'https://cdn.jsdelivr.net/npm/@heyputer/puter.js@2/dist/puter.dev.js',
+  'https://unpkg.com/@heyputer/puter.js@2/dist/puter.dev.js',
+  'https://js.puter.com/v2/'
 ], 0);
 </script>
 
@@ -585,9 +729,23 @@ function switchTab(tab) {
   homeActiveCat = 'all';
   document.getElementById('tab-image').classList.toggle('active', tab === 'image');
   document.getElementById('tab-video').classList.toggle('active', tab === 'video');
-  document.getElementById('section-title').textContent = tab === 'video' ? 'Video prompts' : 'Scene prompts';
-  document.getElementById('catalog-sheet-title').textContent = tab === 'video' ? 'Video Catalog' : 'Prompt Catalog';
-  rebuildUI();
+  document.getElementById('tab-officer').classList.toggle('active', tab === 'officer');
+
+  // Show/hide main content vs officer section
+  const mainContent = document.getElementById('main-content');
+  const officerSection = document.getElementById('officer-section');
+  if (tab === 'officer') {
+    mainContent.style.display = 'none';
+    officerSection.classList.add('active');
+    // Refresh char count in case user pasted before switching tab
+    setTimeout(() => onOfficerPromptInput(document.getElementById('officer-prompt-input')), 50);
+  } else {
+    mainContent.style.display = 'block';
+    officerSection.classList.remove('active');
+    document.getElementById('section-title').textContent = tab === 'video' ? 'Video prompts' : 'Scene prompts';
+    document.getElementById('catalog-sheet-title').textContent = tab === 'video' ? 'Video Catalog' : 'Prompt Catalog';
+    rebuildUI();
+  }
 }
 
 function tabPrompts() {
@@ -840,7 +998,7 @@ function waitForPuter(timeoutMs = 30000) {
 }
 
 // ════════════════════════════════════════
-//  GENERATE IMAGE (Puter / Nano Banana)
+//  GENERATE IMAGE — Puter / Nano Banana
 // ════════════════════════════════════════
 async function generateImage() {
   const prompt = document.getElementById('prompt').value.trim();
@@ -856,72 +1014,73 @@ async function generateImage() {
   output.innerHTML = '';
 
   const models = compare
-    ? ['gemini-3.1-flash-image-preview', 'gemini-3-pro-image-preview']
+    ? ['gemini-2.5-flash-image', 'gemini-3.1-flash-image-preview']
     : [model];
 
   for (const m of models) {
+    const mId    = m.replace(/[^a-zA-Z0-9-_]/g, '-');
+    const canSave = !!(localStorage.getItem(GH_REPO_KEY) && localStorage.getItem(GH_TOKEN_KEY));
+
     const card = document.createElement('div');
     card.className = 'output-card';
-
-    const repo  = localStorage.getItem(GH_REPO_KEY);
-    const token = localStorage.getItem(GH_TOKEN_KEY);
-    const canSave = !!(repo && token);
-    const mId = m.replace(/[^a-zA-Z0-9-_]/g, '-'); // safe ID: dots → dashes
-
     card.innerHTML = `
       <div class="output-card-header">
-        <span>${m.replace('gemini-','').replace('-image-preview','').replace('-preview-image-generation','')}</span>
+        <span>🍌 ${m.replace('gemini-','').replace('-image-preview','').replace('-image','')}</span>
         ${canSave ? `<button type="button" class="save-img-btn" id="save-img-${mId}" onclick="saveImageToGitHub('${mId}')" disabled>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
-          Save to GitHub
+          Save
         </button>` : ''}
       </div>
-      <div class="spinner-wrap" id="spinner-${mId}"><div class="spinner"></div><div class="spinner-label">Nano Banana rendering…</div></div>`;
+      <div class="spinner-wrap" id="spinner-${mId}">
+        <div class="spinner"></div>
+        <div class="spinner-label">Nano Banana rendering…</div>
+      </div>`;
     output.appendChild(card);
 
     try {
       await waitForPuter();
-      if (typeof puter === 'undefined' || !puter.ai) throw new Error('Puter AI not loaded. Try again in a moment.');
+      if (typeof puter === 'undefined' || !puter.ai) throw new Error('Puter not loaded. Reload the page and try again.');
 
-      // ── Prompt: inject face/costume preservation when ref image given ──
+      // Face/costume preservation prompt prefix when ref image given
       let finalPrompt = prompt;
       if (refBase64) {
         finalPrompt =
-          'CRITICAL INSTRUCTION: The attached reference photo shows the EXACT person (actor/actress) for this scene. ' +
-          'You MUST replicate their face, facial features, skin tone, eye shape, hair colour and style, ' +
-          'body proportions, and every detail of their outfit and footwear (including heel type and height) ' +
-          'with complete accuracy. Do NOT alter the person\'s appearance in any way whatsoever. ' +
-          'Only the scene, background, lighting and environment should change per the description below.\n\n' +
-          prompt;
+          'CRITICAL INSTRUCTION: The attached reference photo shows the EXACT person for this scene. ' +
+          'You MUST preserve their face, facial features, skin tone, eye shape, hair colour and style, ' +
+          'body proportions, and every detail of their outfit and footwear (including heel type/height) ' +
+          'with complete accuracy. Do NOT alter the person\'s appearance in any way. ' +
+          'Only change the scene, background, lighting and environment.\n\n' + prompt;
       }
 
-      // ── Puter Gemini img2img: input_image = pure base64 (NO data:xxx prefix) ──
+      // Puter img2img: input_image = pure base64, no data:... prefix
       const opts = { model: m };
       if (refBase64) {
-        opts.input_image           = refBase64;   // pure base64 string only
-        opts.input_image_mime_type = refMime;     // e.g. 'image/jpeg'
+        opts.input_image           = refBase64;
+        opts.input_image_mime_type = refMime;
       }
 
-      debugLog += `\n[${m}] calling → ref=${!!refBase64}, mime=${refMime}, promptLen=${finalPrompt.length}`; updateDebug();
+      debugLog += `\n[${m}] calling Puter, ref=${!!refBase64}`; updateDebug();
       const imgEl = await puter.ai.txt2img(finalPrompt, opts);
-      debugLog += `\n[${m}] OK`; updateDebug();
       imgEl.style.width = '100%'; imgEl.style.display = 'block';
       imgEl.id = `gen-img-${mId}`;
+      debugLog += `\n[${m}] OK`; updateDebug();
+
       card.querySelector(`#spinner-${mId}`).replaceWith(imgEl);
-      // Enable save button now that image exists
       const saveBtn = document.getElementById(`save-img-${mId}`);
       if (saveBtn) saveBtn.disabled = false;
+
     } catch (err) {
       debugLog += `\n[${m}] Error: ${err.message}`; updateDebug();
       const e = document.createElement('div');
       e.className = 'error-msg';
-      e.textContent = 'Error: ' + err.message;
+      e.textContent = `❌ ${err.message}`;
       card.querySelector(`#spinner-${mId}`).replaceWith(e);
     }
   }
 
   btn.disabled = false;
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate`;
+  updateAccountLabel();
   output.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -1042,8 +1201,14 @@ function openSettings() {
   document.getElementById('gh-repo').value  = localStorage.getItem(GH_REPO_KEY) || '';
   document.getElementById('gh-token').value = localStorage.getItem(GH_TOKEN_KEY) || '';
   document.getElementById('gh-status').className = 'status-msg';
-  const connected = localStorage.getItem(GH_REPO_KEY) && localStorage.getItem(GH_TOKEN_KEY);
-  document.getElementById('gh-connected-wrap').style.display = connected ? 'block' : 'none';
+  const ghConnected = localStorage.getItem(GH_REPO_KEY) && localStorage.getItem(GH_TOKEN_KEY);
+  document.getElementById('gh-connected-wrap').style.display = ghConnected ? 'block' : 'none';
+  // Update Puter account label in settings card
+  updateAccountLabel().then(() => {
+    const lbl = document.getElementById('puter-account-card-label');
+    const main = document.getElementById('puter-account-label');
+    if (lbl && main) lbl.textContent = main.textContent;
+  });
   openSheet('settings-sheet');
 }
 function closeSettings() { closeSheet('settings-sheet'); }
@@ -1078,6 +1243,34 @@ async function saveGithubSettings() {
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+}
+
+// ── Puter account management ──
+async function updateAccountLabel() {
+  const label = document.getElementById('puter-account-label');
+  if (!label) return;
+  try {
+    if (typeof puter === 'undefined' || !puter.auth) return;
+    if (puter.auth.isSignedIn()) {
+      const user = await puter.auth.getUser();
+      label.textContent = `Puter: @${user.username || user.email || 'signed in'}`;
+      label.style.color = 'var(--text-secondary)';
+    } else {
+      label.textContent = 'Puter: not signed in';
+      label.style.color = 'var(--text-muted)';
+    }
+  } catch { label.textContent = 'Puter: connecting…'; }
+}
+
+async function switchPuterAccount() {
+  try {
+    if (typeof puter === 'undefined' || !puter.auth) {
+      showToast('Puter not loaded yet', 'err'); return;
+    }
+    puter.auth.signOut();
+    showToast('✅ Signed out — tap Generate to sign in with a new account', 'ok');
+    document.getElementById('puter-account-label').textContent = 'Puter: signed out';
+  } catch(e) { showToast('Error: ' + e.message, 'err'); }
 }
 
 // ─── Single reference image ───
@@ -1199,22 +1392,237 @@ function toggleDebug() {
   }
   loadPrompts();
 
-  // Puter status indicator — polls until ready or 20s timeout
+  // Puter status indicator — polls until ready or 30s timeout, logs to debug
   const pill = document.getElementById('puter-status');
   let attempts = 0;
+  debugLog = '[init] Waiting for Puter...'; updateDebug();
   const iv = setInterval(() => {
     attempts++;
-    if (typeof puter !== 'undefined' && puter.ai) {
+    const puterExists = typeof puter !== 'undefined';
+    const puterAiReady = puterExists && !!puter.ai;
+    if (puterAiReady) {
       clearInterval(iv);
       pill.style.background = '#d1fae5'; pill.style.color = '#065f46';
       pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block;"></span>Ready';
-    } else if (attempts > 200) {
+      debugLog += '\n[init] Puter loaded OK after ' + (attempts * 100) + 'ms';
+      debugLog += '\n[init] puter.ai keys = ' + JSON.stringify(Object.keys(puter.ai || {}));
+      updateDebug();
+      // Proactively trigger Puter auth so login popup shows immediately on page load
+      try {
+        if (puter.auth && typeof puter.auth.isSignedIn === 'function') {
+          const signedIn = puter.auth.isSignedIn();
+          debugLog += '\n[auth] isSignedIn=' + signedIn;
+          updateDebug();
+          if (!signedIn) {
+            // Trigger login popup via a minimal ai.chat call
+            debugLog += '\n[auth] not signed in — triggering login via ai.chat'; updateDebug();
+            puter.ai.chat('hi').then(() => {
+              debugLog += '\n[auth] signed in OK'; updateDebug();
+              updateAccountLabel();
+            }).catch(e => {
+              debugLog += '\n[auth] login prompt: ' + e.message; updateDebug();
+              updateAccountLabel();
+            });
+          } else {
+            updateAccountLabel();
+          }
+        } else {
+          updateAccountLabel();
+        }
+      } catch(authErr) {
+        debugLog += '\n[auth] error: ' + authErr.message; updateDebug();
+        updateAccountLabel();
+      }
+    } else if (attempts % 20 === 0) {
+      // Log progress every 2s
+      debugLog = '[init] Waiting for Puter... ' + (attempts * 100) + 'ms' +
+        '\n  puter exists: ' + puterExists +
+        '\n  puter.ai ready: ' + puterAiReady;
+      updateDebug();
+      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>Loading ' + Math.round(attempts/10) + 's…';
+    }
+    if (attempts > 300) {
       clearInterval(iv);
       pill.style.background = '#fee2e2'; pill.style.color = '#991b1b';
-      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#ef4444;display:inline-block;"></span>Offline — reload';
+      pill.innerHTML = '<span style="width:5px;height:5px;border-radius:50%;background:#ef4444;display:inline-block;"></span>Failed';
+      debugLog += '\n[init] FAILED after 30s. puter=' + (typeof puter) + ' puter.ai=' + (typeof puter !== "undefined" ? typeof puter.ai : "n/a");
+      updateDebug();
     }
   }, 100);
+
 })();
+</script>
+<script>
+// ════════════════════════════════════════
+//  OFFICER / DALL-E STUDIO
+// ════════════════════════════════════════
+
+// localStorage key for saved officer prompts
+const OFFICER_CATALOG_KEY = 'nb-officer-catalog';
+
+// In-memory list of saved officer prompts: [{gist, prompt, ts}]
+let officerCatalog = [];
+let officerGenerating = false;
+
+// Load catalog from localStorage
+function loadOfficerCatalog() {
+  try {
+    officerCatalog = JSON.parse(localStorage.getItem(OFFICER_CATALOG_KEY) || '[]');
+  } catch(e) { officerCatalog = []; }
+  renderOfficerCatalog();
+}
+
+// Render the saved prompts list
+function renderOfficerCatalog() {
+  const wrap = document.getElementById('officer-catalog-wrap');
+  const list = document.getElementById('officer-catalog-list');
+  if (!officerCatalog.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = '';
+  officerCatalog.slice().reverse().forEach((item, i) => {
+    const realIdx = officerCatalog.length - 1 - i;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--chip-border);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;';
+    row.innerHTML = `
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👮 ${item.gist}</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.prompt.substring(0,80)}…</div>
+      </div>
+      <button type="button" onclick="event.stopPropagation();deleteOfficerPrompt(${realIdx})"
+        style="background:transparent;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:2px 4px;flex-shrink:0;">🗑️</button>
+    `;
+    row.onclick = () => loadOfficerPrompt(realIdx);
+    list.appendChild(row);
+  });
+}
+
+// Load a saved prompt into the textarea
+function loadOfficerPrompt(idx) {
+  const item = officerCatalog[idx];
+  if (!item) return;
+  const ta = document.getElementById('officer-prompt-input');
+  ta.value = item.prompt;
+  onOfficerPromptInput(ta);
+  ta.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showToast('📋 Prompt loaded: ' + item.gist, 'ok');
+}
+
+// Delete a saved prompt
+function deleteOfficerPrompt(idx) {
+  officerCatalog.splice(idx, 1);
+  localStorage.setItem(OFFICER_CATALOG_KEY, JSON.stringify(officerCatalog));
+  renderOfficerCatalog();
+  showToast('🗑️ Prompt deleted', 'ok');
+}
+
+// Handle textarea input — update char count, show save row
+function onOfficerPromptInput(el) {
+  if (!el) el = document.getElementById('officer-prompt-input');
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = Math.max(el.scrollHeight, 120) + 'px';
+  const len = el.value.trim().length;
+  const counter = document.getElementById('officer-charcount');
+  if (counter) counter.textContent = len + ' characters';
+  const saveRow = document.getElementById('officer-save-row');
+  if (saveRow) saveRow.style.display = len > 20 ? 'block' : 'none';
+}
+
+// Save current prompt to catalog
+function saveOfficerPromptToCatalog() {
+  const prompt = document.getElementById('officer-prompt-input').value.trim();
+  const gist   = document.getElementById('officer-gist-input').value.trim();
+  const status = document.getElementById('officer-save-status');
+
+  if (!prompt) { showStatus('officer-save-status', 'err', '❌ Enter a prompt first.'); return; }
+  if (!gist)   { showStatus('officer-save-status', 'err', '❌ Enter a short gist/title.'); return; }
+
+  // Check for duplicate gist
+  if (officerCatalog.find(p => p.gist.toLowerCase() === gist.toLowerCase())) {
+    showStatus('officer-save-status', 'err', '❌ A prompt with this gist already exists.');
+    return;
+  }
+
+  officerCatalog.push({ gist, prompt, ts: Date.now() });
+  localStorage.setItem(OFFICER_CATALOG_KEY, JSON.stringify(officerCatalog));
+  renderOfficerCatalog();
+
+  document.getElementById('officer-gist-input').value = '';
+  document.getElementById('officer-save-row').style.display = 'none';
+  showToast('✅ Saved: ' + gist, 'ok');
+}
+
+// Main generate function — calls puter.ai.txt2img with DALL-E
+async function officerGenerate() {
+  const prompt = document.getElementById('officer-prompt-input').value.trim();
+  if (!prompt) { showToast('✍️ Paste a prompt first', 'err'); return; }
+  if (officerGenerating) return;
+
+  const model  = document.getElementById('officer-model-select').value;
+  const btn    = document.getElementById('btn-officer-generate');
+  const output = document.getElementById('officer-output');
+
+  officerGenerating = true;
+  btn.disabled = true;
+  btn.innerHTML = `<div class="dot-anim"><span></span><span></span><span></span></div> Generating…`;
+
+  // Show card + spinner IMMEDIATELY before any async work
+  const mId = 'dalle-' + Date.now();
+  const canSave = !!(localStorage.getItem(GH_REPO_KEY) && localStorage.getItem(GH_TOKEN_KEY));
+
+  const card = document.createElement('div');
+  card.className = 'output-card';
+  card.innerHTML = `
+    <div class="output-card-header">
+      <span>🎨 ${model.toUpperCase()}</span>
+      ${canSave ? `<button type="button" class="save-img-btn" id="save-img-${mId}" onclick="saveImageToGitHub('${mId}')" disabled>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+        Save
+      </button>` : ''}
+    </div>
+    <div class="spinner-wrap" id="spinner-${mId}">
+      <div class="spinner"></div>
+      <div class="spinner-label" id="spinner-label-${mId}">Connecting to Puter…</div>
+    </div>`;
+  output.prepend(card);
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  try {
+    // Wait for puter — update spinner label while waiting
+    const labelEl = document.getElementById('spinner-label-' + mId);
+    if (labelEl) labelEl.textContent = 'Waiting for Puter login…';
+    await waitForPuter();
+    if (labelEl) labelEl.textContent = model + ' generating image…';
+
+    // Call puter.ai.txt2img with DALL-E model
+    const imgEl = await puter.ai.txt2img(prompt, { model });
+    imgEl.style.width = '100%';
+    imgEl.style.display = 'block';
+    imgEl.id = `gen-img-${mId}`;
+
+    card.querySelector(`#spinner-${mId}`).replaceWith(imgEl);
+    const saveBtn = document.getElementById(`save-img-${mId}`);
+    if (saveBtn) saveBtn.disabled = false;
+
+    showToast('✅ DALL-E image ready!', 'ok');
+    debugLog += `\n[${model}] DALL-E OK`; updateDebug();
+
+  } catch(err) {
+    debugLog += `\n[${model}] Error: ${err.message}`; updateDebug();
+    const errEl = document.createElement('div');
+    errEl.className = 'error-msg';
+    errEl.textContent = '❌ ' + err.message;
+    card.querySelector(`#spinner-${mId}`).replaceWith(errEl);
+  }
+
+  officerGenerating = false;
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate with DALL-E`;
+}
+
+// Init on load
+document.addEventListener('DOMContentLoaded', () => { loadOfficerCatalog(); });
+
 </script>
 </body>
 </html>
