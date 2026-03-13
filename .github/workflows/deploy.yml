@@ -1,0 +1,151 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - develop
+      - preprod
+      - master
+
+# Allow one concurrent deployment per branch
+concurrency:
+  group: pages-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write   # needed to push to gh-pages branch
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout the branch that triggered this push ──
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      # ── 2. Determine deploy subfolder ──
+      #   master  → deploy to root  (/)
+      #   develop → deploy to /develop/
+      #   preprod → deploy to /preprod/
+      - name: Set deploy path
+        id: vars
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          if [ "$BRANCH" = "master" ]; then
+            echo "subfolder=." >> $GITHUB_OUTPUT
+            echo "env_name=Production"  >> $GITHUB_OUTPUT
+            echo "env_label=PROD"       >> $GITHUB_OUTPUT
+          elif [ "$BRANCH" = "preprod" ]; then
+            echo "subfolder=preprod"    >> $GITHUB_OUTPUT
+            echo "env_name=Pre-Production" >> $GITHUB_OUTPUT
+            echo "env_label=PREPROD"    >> $GITHUB_OUTPUT
+          else
+            echo "subfolder=develop"    >> $GITHUB_OUTPUT
+            echo "env_name=Development" >> $GITHUB_OUTPUT
+            echo "env_label=DEV"        >> $GITHUB_OUTPUT
+          fi
+
+      # ── 3. Inject env banner into index.html ──
+      #   Adds a small sticky ribbon so you always know which env you're on.
+      #   Banner is injected right after <body> — safely stripped in master (no banner on prod).
+      - name: Inject environment banner
+        run: |
+          LABEL="${{ steps.vars.outputs.env_label }}"
+          BRANCH="${{ github.ref_name }}"
+
+          if [ "$BRANCH" != "master" ]; then
+            # Pick banner colour: DEV=blue, PREPROD=amber
+            if [ "$LABEL" = "DEV" ]; then
+              COLOR="#1d4ed8"; BG="#dbeafe"
+            else
+              COLOR="#92400e"; BG="#fef3c7"
+            fi
+
+            BANNER="<div id=\"env-banner\" style=\"position:fixed;top:0;left:0;right:0;z-index:9999;background:${BG};color:${COLOR};font-family:monospace;font-size:11px;font-weight:700;text-align:center;padding:4px 0;letter-spacing:.8px;border-bottom:1.5px solid ${COLOR};pointer-events:none;\">⚠ ${LABEL} — ${BRANCH} branch</div>"
+
+            # Insert banner right after <body>
+            sed -i "s|<body>|<body>${BANNER}|" index.html
+          fi
+
+      # ── 4. Checkout gh-pages branch (or create it) ──
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages-dir
+          fetch-depth: 0
+        continue-on-error: true   # first run: gh-pages may not exist yet
+
+      - name: Init gh-pages if missing
+        run: |
+          if [ ! -d "gh-pages-dir/.git" ]; then
+            mkdir -p gh-pages-dir
+            cd gh-pages-dir
+            git init
+            git checkout -b gh-pages
+            git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+            echo "# GitHub Pages" > README.md
+            git add . && git commit -m "Init gh-pages"
+          fi
+
+      # ── 5. Copy built files into the correct subfolder ──
+      - name: Copy files to subfolder
+        run: |
+          SUBFOLDER="${{ steps.vars.outputs.subfolder }}"
+
+          if [ "$SUBFOLDER" = "." ]; then
+            # master → copy everything to root (but don't wipe /develop or /preprod)
+            rsync -av --exclude='.git' --exclude='develop' --exclude='preprod' \
+              --exclude='.github' \
+              ./ gh-pages-dir/
+          else
+            # develop / preprod → copy into named subfolder
+            mkdir -p "gh-pages-dir/${SUBFOLDER}"
+            rsync -av --exclude='.git' --exclude='.github' \
+              ./ "gh-pages-dir/${SUBFOLDER}/"
+          fi
+
+      # ── 6. Commit & push to gh-pages ──
+      - name: Commit and push
+        run: |
+          cd gh-pages-dir
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          # Only commit if there are actual changes
+          if git diff --staged --quiet; then
+            echo "No changes to deploy."
+          else
+            git commit -m "Deploy ${{ github.ref_name }} @ ${{ github.sha }}"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages --force
+          fi
+
+      # ── 7. Summary ──
+      - name: Deployment summary
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          LABEL="${{ steps.vars.outputs.env_label }}"
+          REPO="${{ github.repository }}"
+          OWNER=$(echo $REPO | cut -d'/' -f1)
+          REPONAME=$(echo $REPO | cut -d'/' -f2)
+
+          if [ "$BRANCH" = "master" ]; then
+            URL="https://${OWNER}.github.io/${REPONAME}/"
+          else
+            URL="https://${OWNER}.github.io/${REPONAME}/${{ steps.vars.outputs.subfolder }}/"
+          fi
+
+          echo "### ✅ Deployed: ${LABEL}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | \`${BRANCH}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ steps.vars.outputs.env_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Live URL | ${URL} |" >> $GITHUB_STEP_SUMMARY
