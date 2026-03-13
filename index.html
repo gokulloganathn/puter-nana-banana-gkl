@@ -1414,12 +1414,14 @@ function toggleDebug() {
           debugLog += '\n[auth] isSignedIn=' + signedIn;
           updateDebug();
           if (!signedIn) {
-            // Touch puter.ai.chat with a tiny call to trigger login popup
-            puter.auth.signIn().then(() => {
+            // Trigger login popup via a minimal ai.chat call
+            debugLog += '\n[auth] not signed in — triggering login via ai.chat'; updateDebug();
+            puter.ai.chat('hi').then(() => {
               debugLog += '\n[auth] signed in OK'; updateDebug();
               updateAccountLabel();
             }).catch(e => {
-              debugLog += '\n[auth] signIn error: ' + e.message; updateDebug();
+              debugLog += '\n[auth] login prompt: ' + e.message; updateDebug();
+              updateAccountLabel();
             });
           } else {
             updateAccountLabel();
@@ -1448,6 +1450,9 @@ function toggleDebug() {
     }
   }, 100);
 
+})();
+</script>
+<script>
 // ════════════════════════════════════════
 //  OFFICER / DALL-E STUDIO
 // ════════════════════════════════════════
@@ -1618,7 +1623,6 @@ async function officerGenerate() {
 // Init on load
 document.addEventListener('DOMContentLoaded', () => { loadOfficerCatalog(); });
 
-})();
 </script>
 </body>
 </html>
